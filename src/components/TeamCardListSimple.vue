@@ -9,9 +9,9 @@
       <van-button
           type="primary"
           size="mini"
-          @click="look"
+          @click="sendMessage(team.id, team.name, 'http://localhost:3000/public/team_avatar')"
       >
-        查看
+        发消息
       </van-button>
     </template>
     <template #default>
@@ -37,6 +37,24 @@ import {TeamType} from "../models/team";
 import {useRouter} from "vue-router";
 
 const router = useRouter();
+
+/**
+ * 进入队伍聊天室
+ *
+ * @param id        - 队伍 id
+ * @param username  - 队伍昵称
+ * @param avatarUrl - 队伍头像
+ */
+const sendMessage = (id, username, avatarUrl) => {
+  router.push({
+    path: '/chat/team',
+    query: {
+      friendId: id,
+      username: username,
+      avatarUrl: avatarUrl
+    }
+  });
+}
 
 interface TeamCardListSimpleProps {
   teamList: TeamType[];
