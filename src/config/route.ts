@@ -15,6 +15,7 @@ import EditPhonePage from '../pages/edit/EditPhonePage.vue'
 import EditEmailPage from '../pages/edit/EditEmailPage.vue'
 import EditAvatarPage from '../pages/edit/EditAvatarPage.vue'
 import PrivateChatRoomPage from '../pages/room/PrivateChatRoomPage.vue'
+import TeamChatRoomPage from '../pages/room/TeamChatRoomPage.vue'
 
 const routes = [
     {path: '/', component: HomePage, meta: {navBar: true, vanTabbar: true, title: '聊天'}},
@@ -36,7 +37,8 @@ const routes = [
     {path: '/edit/phone', component: EditPhonePage, meta: {navBar: false, vanTabbar: false, title: '编辑-手机号'}},
     {path: '/edit/email', component: EditEmailPage, meta: {navBar: false, vanTabbar: false, title: '编辑-邮箱'}},
     {path: '/edit/avatar', component: EditAvatarPage, meta: {navBar: false, vanTabbar: false, title: '编辑-头像'}},
-    {path: '/chat/private', component: PrivateChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '私聊'}},
+    {path: '/chat/private', component: PrivateChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '好友聊天'}},
+    {path: '/chat/team', component: TeamChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '队伍聊天'}},
 ]
 
 export default routes;
