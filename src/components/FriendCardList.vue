@@ -54,15 +54,19 @@ interface FriendCardListProps {
   friendList: UserType[];
 }
 
-const props = withDefaults( defineProps<FriendCardListProps>(), {
+const props = withDefaults(defineProps<FriendCardListProps>(), {
   // @ts-ignore
   friendList: [] as UserType[],
 });
 
 /**
- * todo 发消息
+ * 进入私聊室
+ *
+ * @param id        - 好友 id
+ * @param username  - 好友昵称
+ * @param avatarUrl - 好友头像
  */
-const sendMessage = (id, username ,avatarUrl) => {
+const sendMessage = (id, username, avatarUrl) => {
   router.push({
     path: '/chat/private',
     query: {
