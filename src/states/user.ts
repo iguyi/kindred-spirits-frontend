@@ -3,6 +3,8 @@ import {UserType} from "../models/user";
 let currentUserState: UserType;
 
 const setCurrentUserState = (user: UserType) => {
+    // @ts-ignore
+    user.tags = JSON.parse(user.tags);
     currentUserState = user;
 }
 
