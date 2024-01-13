@@ -30,14 +30,21 @@
         @click="toEdit('/edit/profile', user.profile)"
     />
 
-    <!-- todo 待完成-->
     <van-cell
         title="我的标签"
         is-link
         center
         :value="user.tags"
         @click="toEdit('/edit/tag', user.profile)"
-    />
+    >
+      <van-tag
+          type="success"
+          v-for="tag in user.tags"
+          style="margin-right: 3px"
+      >
+        {{ tag }}
+      </van-tag>
+    </van-cell>
 
     <van-cell
         title="账号"
@@ -67,9 +74,9 @@
 
     <!-- todo -->
     <van-cell
-    title="修改密码"
-    is-link
-    @click="quit"
+        title="修改密码"
+        is-link
+        @click="updatePassword"
     />
 
     <van-cell
@@ -77,7 +84,6 @@
         :value="user.createTime"
     />
 
-    <!-- todo -->
     <van-cell
         title="退出登录"
         is-link
@@ -96,11 +102,11 @@ import myAxios from "../plugins/myAxios";
 // 当前登录用户
 const user = ref({});
 
+const router = useRouter();
+
 onMounted(async () => {
   user.value = await getCurrentUser();
 });
-
-const router = useRouter();
 
 /**
  * 跳转至信息编辑页面
