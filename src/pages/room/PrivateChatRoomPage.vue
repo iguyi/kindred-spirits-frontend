@@ -38,24 +38,29 @@ import {nextTick, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {Toast} from "vant";
 import {getCurrentUser} from "../../services/user";
+import myAxios from "../../plugins/myAxios";
 
 const router = useRouter();
 const route = useRoute();
 
 const stats = ref({
+  // 当前登录用户
   user: {
     id: 0,
     username: "",
     avatarUrl: ''
   },
+
+  // 好友
   chatUser: {
     id: 0,
     username: '',
     avatarUrl: ''
   },
-  text: "",
-  messages: [],
-  content: ''
+
+  text: "",  // 输入框内容
+  messages: [],  // 存储消息, 不发给后端
+  content: ''  // html 拼接结果
 });
 
 /**
@@ -64,69 +69,126 @@ const stats = ref({
 let socket = null;
 
 /**
- * 心跳检测间隔时间
+ * 心跳检测间隔时间 - 30秒
  */
-const heartbeatInterval = 30 * 1000; // 30秒
+const heartbeatInterval = 30 * 1000;
 
 /**
  * 心跳计时器
  */
 let heartbeatTimer = null;
 
+/**
+ * 存储 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
+ */
 const chatRoom = ref(null);
+
+
 onMounted(async () => {
+  // 获取好友信息并记录
   const {friendId, username, avatarUrl} = route.query;
   stats.value.chatUser.id = Number.parseInt(typeof friendId === "string" ? friendId : "0");
   stats.value.chatUser.username = (typeof username === "string" ? username : null);
   stats.value.chatUser.avatarUrl = (typeof avatarUrl === "string" ? avatarUrl : null);
 
+  // 获取当前登录用户消息
   let loginUser = await getCurrentUser();
   stats.value.user.id = loginUser.id;
   stats.value.user.username = loginUser.username;
   stats.value.user.avatarUrl = loginUser.avatarUrl;
 
+  // 发送请求到 "/chat/privateChat", 获取历史聊天消息
+  const privateMessage = await myAxios.post("/chat/private", {
+    friendId: stats.value.chatUser.id,
+  });
+
+  // 遍历显示历史消息
+  privateMessage.data.data.forEach(chat => {
+    // 拿到消息发送者消息
+    let senderUser = chat.senderUser;
+    if (senderUser.id === stats.value.user.id) {
+      // 我发出的消息
+      createContent(null, senderUser, chat.chatContent);
+    } else {
+      // 朋友发出的消息
+      createContent(senderUser, null, chat.chatContent);
+    }
+  });
+
+  // 初始化 WebSocket 连接
   init();
+
+  // 重载数据
+  await nextTick();
+
+  // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
+  const lastElement = chatRoom.value.lastElementChild;
+
+  // 将元素滚动到浏览器窗口的可见区域。
+  lastElement.scrollIntoView();
 });
 
 /**
  * 初始化
  */
 const init = () => {
+  // 当前登录用户 id
   let uid = stats.value.user?.id;
 
   if (typeof (WebSocket) == "undefined") {
     Toast.fail("您的浏览器不支持WebSocket");
-  } else {
-    // let socketUrl = 'ws://' + 'localhost:8080/kindredspirits' + '/websocket/' + uid + '/' + '0';
-    let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/0`;
-    if (socket != null) {
-      socket.close();
-      socket = null;
+    return;
+  }
+
+  // 关闭旧的 WebSocket 连接, 并开启新的 WebSocket 连接
+  // 因为旧的是私聊, 但是当前的聊天室可能是被的类型
+  if (socket != null) {
+    socket.close();
+    socket = null;
+  }
+
+  // 根据 socketUrl 开启一个新的 WebSocket 服务
+  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/0`;
+  socket = new WebSocket(socketUrl);
+
+  // 打开事件
+  socket.onopen = function () {
+    startHeartbeat();
+  };
+
+  // 设置 WebSocket 打开是执行的动作
+  socket.onmessage = function (msg) {
+    // 心跳检查
+    if (msg.data === "PONG") {
+      return;
     }
-    // 开启一个websocket服务
-    socket = new WebSocket(socketUrl);
-    // 打开事件
-    socket.onopen = function () {
-      startHeartbeat();
-    };
-    //  浏览器端收消息，获得从服务端发送过来的文本消息
-    socket.onmessage = function (msg) {
-      if (msg.data === "PONG") {
-        return;
-      }
-      // 对收到的json数据进行解析
-      let data = JSON.parse(msg.data);
-      createContent(data.receiverUser, null, data.chatContent, null, data.sendTime)
-    };
-    //关闭事件
-    socket.onclose = function () {
-      stopHeartbeat();
-      setTimeout(init, 5000); // 5秒后重连
-    };
-    //发生了错误事件
-    socket.onerror = function () {
-      Toast.fail("发生了错误")
-    }
+
+    // 对收到的json数据进行解析
+    let data = JSON.parse(msg.data);
+
+    // 保存消息到聊天室数据中
+    stats.value.messages.push(data);
+
+    // 构建消息内容
+    createContent(data.senderUser, null, data.chatContent);
+
+    // 重载数据
+    nextTick(() => {
+      // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
+      const lastElement = chatRoom.value.lastElementChild;
+      lastElement.scrollIntoView();
+    });
+  };
+
+  //关闭事件
+  socket.onclose = function () {
+    stopHeartbeat();
+    setTimeout(init, 5000); // 5秒后重连
+  };
+
+  //发生了错误事件
+  socket.onerror = function () {
+    Toast.fail("发生了错误")
   }
 }
 
@@ -182,7 +244,7 @@ const send = () => {
 
   socket.send(JSON.stringify(message));
   stats.value.messages.push({user: stats.value.user.id, text: stats.value.text});
-  createContent(stats.value.user, stats.value.user, stats.value.text, null, new Date());
+  createContent(null, stats.value.user, stats.value.text);
   stats.value.text = '';
   nextTick(() => {
     const lastElement = chatRoom.value.lastElementChild;
@@ -208,31 +270,38 @@ const onClickRight = () => {
 
 /**
  * 这个方法是用来将 json的聊天消息数据转换成 html的。
+ *
+ * @param friendUser    - 朋友
+ * @param currentUser   - 自己
+ * @param text - 消息
  */
-const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
+const createContent = (friendUser, currentUser, text) => {
   // 当前用户消息
   let html;
-  if (nowUser) {
+  if (currentUser) {
     // nowUser 表示是否显示当前用户发送的聊天消息，绿色气泡
     html = `
-    <div class="message self">
-    <div class="myInfo info">
-      <img :alt=${nowUser.username} class="avatar" onclick="showUser(${nowUser.id})" src=${nowUser.avatarUrl}>
-    </div>
-      <p class="text">${text}</p>
-    </div>
-`
-  } else if (remoteUser) {
+      <div class="message self">
+        <div class="myInfo info">
+            <img :alt=${currentUser.username} class="avatar" onclick="showUser(${currentUser.id})" src=${currentUser.avatarUrl}>
+        </div>
+        <p class="text">${text}</p>
+      </div>
+    `
+  } else if (friendUser) {
     // remoteUser表示远程用户聊天消息，灰色的气泡
     html = `
-     <div class="message other">
-      <img :alt=${remoteUser.username} class="avatar" onclick="showUser(${remoteUser.id})" src=${remoteUser.avatarUrl}>
-      <div class="info">
-        <p class="text" >${text}</p>
+      <div class="message other">
+        <img :alt=${friendUser.username} class="avatar" onclick="showUser(${friendUser.id})" src=${friendUser.avatarUrl}>
+        <div class="info">
+          <p class="text" >${text}</p>
+        </div>
       </div>
-    </div>
-`
+    `
+  } else {
+    console.log("数据错误");
   }
+
   // 汇总 html 拼接结果
   stats.value.content += html;
 }
