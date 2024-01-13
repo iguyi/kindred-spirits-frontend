@@ -3,8 +3,8 @@
       v-for="team in teamList"
       center
   >
-    <template #right-icon>
-    </template>
+    <template #right-icon></template>
+
     <template #extra>
       <van-button
           type="primary"
@@ -25,7 +25,7 @@
           />
         </div>
         <div style="margin-left: 5px">
-          <span class="content">{{ team.name }}</span><br>
+          <span class="custom-tag">{{ team.name }}</span><br>
         </div>
       </div>
     </template>
@@ -72,8 +72,10 @@ const props = withDefaults(defineProps<TeamCardListSimpleProps>(), {
   align-items: center; /* 垂直居中对齐 */
 }
 
-.content {
+.custom-tag {
+  margin-left: 10px;
   margin-right: 4px;
-  font-size: 20px;
+  vertical-align: middle;
+  font-size: 15px;
 }
 </style>
