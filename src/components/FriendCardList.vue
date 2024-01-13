@@ -18,26 +18,16 @@
     </template>
     <template #default>
       <div class="custom-cell">
-        <!-- 头像 -->
         <div>
           <van-image
               round
-              width="80px"
-              height="80px"
+              width="35px"
+              height="35px"
               :src="friend.avatarUrl"
           />
         </div>
-        <!-- 用户信息 -->
         <div style="margin-left: 5px">
-          <span class="custom-title">{{ friend.username }}</span><br>
-          <van-tag class="custom-tag"
-                   v-for="tag in friend.tags"
-                   type="danger"
-          >
-            {{ tag }}
-          </van-tag>
-          <br>
-          <span>{{ friend.profile }}</span>
+          <span class="custom-tag">{{ friend.username }}</span>
         </div>
       </div>
     </template>
@@ -82,19 +72,13 @@ const sendMessage = (id, username, avatarUrl) => {
 .custom-cell {
   display: flex;
   align-items: center; /* 垂直居中对齐 */
-}
-
-.custom-title {
-  font-weight: bold;
-  margin-top: 0;
-  margin-right: 4px;
-  vertical-align: middle;
-  font-size: 28px;
+  margin-left: 10px;
 }
 
 .custom-tag {
+  margin-left: 10px;
   margin-right: 4px;
   vertical-align: middle;
-  font-size: 10px;
+  font-size: 20px;
 }
 </style>
