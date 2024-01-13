@@ -35,8 +35,7 @@
 
 <script setup lang="ts">
 import {useRoute, useRouter} from "vue-router";
-import {nextTick, onMounted} from "vue/dist/vue";
-import {ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
 
