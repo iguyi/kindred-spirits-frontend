@@ -38,6 +38,7 @@ import {useRoute, useRouter} from "vue-router";
 import {nextTick, onMounted, ref} from "vue";
 import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
+import {getCurrentUser} from "../../services/user";
 
 const router = useRouter();
 const route = useRoute();
@@ -86,9 +87,16 @@ let heartbeatTimer = null;
 const chatRoom = ref(null);
 
 onMounted(async () => {
+  // 获取队伍信息
   const {teamId, teamName} = route.query;
   stats.value.team.teamId = Number.parseInt(typeof teamId === "string" ? teamId : "0");
   stats.value.team.teamName = typeof teamName === "string" ? teamName : '';
+
+  // 获取当前登录用户消息
+  let loginUser = await getCurrentUser();
+  stats.value.user.id = loginUser.id;
+  stats.value.user.username = loginUser.username;
+  stats.value.user.avatarUrl = loginUser.avatarUrl;
 
   // 发送请求到 "/chat/team", 获取历史聊天消息
   const teamMessage = await myAxios.post("/chat/team", {
