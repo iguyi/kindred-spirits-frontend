@@ -157,7 +157,7 @@ const init = () => {
     startHeartbeat();
   };
 
-  // 设置 WebSocket 打开是执行的动作
+  // 设置 WebSocket 打开时执行的动作
   socket.onmessage = function (msg) {
     // 心跳检查
     if (msg.data === "PONG") {
@@ -175,7 +175,7 @@ const init = () => {
 
     // 重载数据
     nextTick(() => {
-      // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
+      // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素\
       const lastElement = chatRoom.value.lastElementChild;
       lastElement.scrollIntoView();
     });
