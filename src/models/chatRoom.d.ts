@@ -9,6 +9,11 @@ export type ChatRoomType = {
     receiverId: number;
 
     /**
+     * 接收者名称(用户昵称或队名)
+     */
+    receiverName: string;
+
+    /**
      * 消息接收者(朋友或队伍) id
      */
     avatarUtl: string;
