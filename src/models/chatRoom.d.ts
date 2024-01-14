@@ -16,7 +16,7 @@ export type ChatRoomType = {
     /**
      * 消息接收者(朋友或队伍) id
      */
-    avatarUtl: string;
+    avatarUrl: string;
 
     /**
      * 最后一条消息
