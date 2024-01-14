@@ -34,7 +34,6 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {ChatRoomType} from "../models/chatRoom";
-import {Toast} from "vant";
 
 const router = useRouter();
 
