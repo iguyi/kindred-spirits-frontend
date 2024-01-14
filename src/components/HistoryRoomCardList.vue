@@ -1,13 +1,13 @@
 <template>
   <van-cell
-      @click="click"
+      @click="click(chatRoom.receiverId, chatRoom.receiverName, chatRoom.avatarUrl, chatRoom.chatType)"
       v-for="chatRoom in chatRoomList"
       is-link
   >
     <template #right-icon></template>
 
     <!--  添加好友  -->
-    <template #extra class="sendTime"> {{chatRoom.sendTime}} </template>
+    <template #extra class="sendTime"> {{ chatRoom.sendTime }}</template>
 
     <template #default>
       <div class="custom-cell">
@@ -23,8 +23,8 @@
 
         <!-- 用户信息 -->
         <div style="margin-left: 5px">
-          <span class="custom-title">{{chatRoom.receiverName}}</span><br>
-          <span>{{chatRoom.lastRecord}}</span>
+          <span class="custom-title">{{ chatRoom.receiverName }}</span><br>
+          <span>{{ chatRoom.lastRecord }}</span>
         </div>
       </div>
     </template>
@@ -38,8 +38,36 @@ import {Toast} from "vant";
 
 const router = useRouter();
 
-const click = () => {
-  Toast.fail("1");
+/**
+ * 进入聊天室
+ *
+ * @param id          - 好友 id 或队伍 id
+ * @param name        - 好友昵称或队伍名
+ * @param avatarUrl   - 头像
+ * @param isTeamChat  - 是否是队伍
+ */
+const click = (id, name, avatarUrl, isTeamChat) => {
+  // alert(`id: ${id}\n name: ${name}\n avatarUrl: ${avatarUrl}\n isTeamChat: ${isTeamChat}`);
+  if (isTeamChat === 1) {
+    // 进入对应的私聊室
+    router.push({
+      path: '/chat/private',
+      query: {
+        friendId: id,
+        username: name,
+        avatarUrl: avatarUrl
+      }
+    });
+  } else {
+    // 进入对应的队伍聊天室
+    router.push({
+      path: '/chat/team',
+      query: {
+        teamId: id,
+        teamName: name,
+      }
+    });
+  }
 }
 
 interface HistoryRoomCardListProps {
