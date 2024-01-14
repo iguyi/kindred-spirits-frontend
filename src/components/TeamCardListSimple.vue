@@ -9,7 +9,7 @@
       <van-button
           type="primary"
           size="mini"
-          @click="sendMessage(team.id, team.name, 'http://localhost:3000/public/team_avatar')"
+          @click="sendMessage(team.id, team.name)"
       >
         发消息
       </van-button>
@@ -38,24 +38,6 @@ import {useRouter} from "vue-router";
 
 const router = useRouter();
 
-/**
- * 进入队伍聊天室
- *
- * @param id        - 队伍 id
- * @param username  - 队伍昵称
- * @param avatarUrl - 队伍头像
- */
-const sendMessage = (id, username, avatarUrl) => {
-  router.push({
-    path: '/chat/team',
-    query: {
-      friendId: id,
-      username: username,
-      avatarUrl: avatarUrl
-    }
-  });
-}
-
 interface TeamCardListSimpleProps {
   teamList: TeamType[];
 }
@@ -64,6 +46,22 @@ const props = withDefaults(defineProps<TeamCardListSimpleProps>(), {
   // @ts-ignore
   teamList: [] as TeamType[],
 });
+
+/**
+ * 进入队伍聊天室
+ *
+ * @param teamId
+ * @param teamName
+ */
+const sendMessage = (teamId, teamName) => {
+  router.push({
+    path: '/chat/team',
+    query: {
+      teamId: teamId,
+      teamName: teamName,
+    }
+  });
+}
 </script>
 
 <style scoped>
