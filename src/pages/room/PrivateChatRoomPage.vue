@@ -136,7 +136,7 @@ const init = () => {
   let uid = stats.value.user?.id;
 
   if (typeof (WebSocket) == "undefined") {
-    Toast.fail("您的浏览器不支持WebSocket");
+    Toast.fail("您的浏览器不支持 WebSocket");
     return;
   }
 
@@ -156,7 +156,7 @@ const init = () => {
     startHeartbeat();
   };
 
-  // 设置 WebSocket 打开是执行的动作
+  // 设置 WebSocket 打开时执行的动作
   socket.onmessage = function (msg) {
     // 心跳检查
     if (msg.data === "PONG") {
@@ -180,13 +180,13 @@ const init = () => {
     });
   };
 
-  //关闭事件
+  // 设置 WebSocket 发生错误事件时执行的动作
   socket.onclose = function () {
     stopHeartbeat();
     setTimeout(init, 5000); // 5秒后重连
   };
 
-  //发生了错误事件
+  // 设置 WebSocket 发生错误事件时执行的动作
   socket.onerror = function () {
     Toast.fail("发生了错误")
   }

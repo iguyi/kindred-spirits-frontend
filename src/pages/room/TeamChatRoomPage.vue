@@ -52,7 +52,6 @@ const stats = ref({
     avatarUrl: ''
   },
 
-  // isCollapse: false,  // 未知
   users: [],  // 队伍成员列表
 
   // 队伍信息
@@ -103,6 +102,7 @@ onMounted(async () => {
     teamId: stats.value.team.teamId
   });
 
+  // 遍历显示历史消息
   teamMessage.data.data.forEach(chat => {
     // 拿到消息发送者消息
     let senderUser = chat.senderUser;
@@ -137,7 +137,7 @@ const init = () => {
   let uid = stats.value.user?.id;
 
   if (typeof (WebSocket) == "undefined") {
-    Toast.fail("您的浏览器不支持WebSocket");
+    Toast.fail("您的浏览器不支持 WebSocket");
     return;
   }
 
@@ -175,7 +175,7 @@ const init = () => {
 
     // 重载数据
     nextTick(() => {
-      // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素\
+      // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
       const lastElement = chatRoom.value.lastElementChild;
       lastElement.scrollIntoView();
     });
@@ -226,7 +226,7 @@ const send = () => {
   }
 
   if (typeof (WebSocket) == "undefined") {
-    Toast.fail("您的浏览器不支持WebSocket");
+    Toast.fail("您的浏览器不支持 WebSocket");
     return;
   }
 
@@ -245,7 +245,6 @@ const send = () => {
     const lastElement = chatRoom.value.lastElementChild;
     lastElement.scrollIntoView();
   });
-
 }
 
 /**
