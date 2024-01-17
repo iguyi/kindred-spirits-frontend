@@ -106,8 +106,29 @@
         </van-search>
       </form>
     </van-tab>
+
+    <!-- 搜索队伍   -->
     <van-tab title="找队伍">
-      todo
+      <form action="/team">
+        <van-search
+            v-model="searchTeamText"
+            show-action
+            placeholder="请输入队伍名/关键词"
+            @search="dofTeamSearch"
+        >
+          <template #action>
+            <div>
+              <van-button
+                  icon="search"
+                  type="primary"
+                  size="small"
+                  block="block"
+                  @click="dofTeamSearch"
+              />
+            </div>
+          </template>
+        </van-search>
+      </form>
     </van-tab>
   </van-tabs>
 </template>
@@ -147,6 +168,8 @@ let originTagList = [
 // 可选标签列表
 let tagList = ref(originTagList);
 
+const searchTeamText = ref('');
+
 /**
  * 搜索条件过滤
  *
@@ -172,6 +195,7 @@ const searchText = ref('');
 const onCancel = () => {
   searchText.value = '';
   tagList.value = originTagList;
+  searchTeamText.value = '';
 };
 
 // 已选中的标签的消息
@@ -228,7 +252,8 @@ const toSearchResult = () => {
     query: {
       model: 1,
       tags: activeIds.value,
-      searchCondition: null
+      searchCondition: null,
+      searchTeamCondition: null
     }
   });
 }
@@ -242,10 +267,24 @@ const dofSearch = () => {
     query: {
       model: 2,
       tags: null,
-      searchCondition: searchText.value
+      searchCondition: searchText.value,
+      searchTeamCondition: null
     }
   });
 }
+
+const dofTeamSearch = () => {
+  router.push({
+    path: '/search/result',
+    query: {
+      model: 3,
+      tags: null,
+      searchCondition: null,
+      searchTeamCondition: searchTeamText.value
+    }
+  });
+}
+
 </script>
 
 <style scoped>
