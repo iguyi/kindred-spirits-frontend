@@ -89,7 +89,7 @@
         <van-search
             v-model="searchText"
             show-action
-            placeholder="请输入标签/昵称/队伍/关键词/关键词"
+            placeholder="请输入对方的账号/昵称/标签/关键词"
             @search="dofSearch"
         >
           <template #action>
@@ -105,6 +105,9 @@
           </template>
         </van-search>
       </form>
+    </van-tab>
+    <van-tab title="找队伍">
+      todo
     </van-tab>
   </van-tabs>
 </template>
@@ -223,7 +226,9 @@ const toSearchResult = () => {
   router.push({
     path: '/search/result',
     query: {
-      tags: activeIds.value
+      model: 1,
+      tags: activeIds.value,
+      searchCondition: null
     }
   });
 }
@@ -232,7 +237,14 @@ const toSearchResult = () => {
  * 自由搜索 - 跳转至 "搜索结果页"
  */
 const dofSearch = () => {
-  alert(searchText.value);
+  router.push({
+    path: '/search/result',
+    query: {
+      model: 2,
+      tags: null,
+      searchCondition: searchText.value
+    }
+  });
 }
 </script>
 
