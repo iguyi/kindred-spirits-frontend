@@ -1,6 +1,10 @@
 <template>
-  <user-card-list :user-list="userList"/>
-  <van-empty v-if="(!userList || userList.length < 1) && $route.meta.result" image="search" description="暂无搜索结果"/>
+  <user-card-list :user-list="userList" :v-if="isUserResult"/>
+  <team-card-list :team-list="teamList" :v-if="!isUserResult"/>
+  <van-empty
+      v-if="(!userList || userList.length < 1) && (!teamList || teamList.length < 1) && $route.meta.result"
+      image="search"
+      description="暂无搜索结果"/>
 </template>
 
 <script setup>
@@ -10,6 +14,7 @@ import myAxios from "../../plugins/myAxios.ts";
 import {Toast} from "vant";
 import qs from "qs";
 import UserCardList from "../../components/UserCardList.vue";
+import TeamCardList from "../../components/TeamCardList.vue";
 
 const route = useRoute();
 
@@ -18,8 +23,21 @@ const route = useRoute();
  */
 const userList = ref([]);
 
+/**
+ * 查询结果 - 队伍列表
+ */
+const teamList = ref([]);
+
+/**
+ * 是否是是用户搜索结果
+ */
+const isUserResult = ref(true);
+
 onMounted(async () => {
-  const {model, tags, searchCondition} = route.query;
+  const {model, tags, searchCondition, searchTeamCondition} = await route.query;
+
+  isUserResult.value = model !== '3';
+
   if (model === '1') {
     const userListData = await myAxios.get('/user/search/tags', {
       params: {
@@ -59,6 +77,15 @@ onMounted(async () => {
       userList.value = userListData.data.data;
     }
     return;
+  }
+
+  const teamListData = await myAxios.get('/team/search', {
+    params: {
+      searchCondition: searchTeamCondition,
+    }
+  });
+  if (teamListData) {
+    teamList.value = teamListData.data.data;
   }
 });
 </script>
