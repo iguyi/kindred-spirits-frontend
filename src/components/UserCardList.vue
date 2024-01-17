@@ -17,7 +17,7 @@
       <van-button
           type="primary"
           size="mini"
-          @click="addUser"
+          @click="addFriend(user.id)"
       >
         添加
       </van-button>
@@ -53,12 +53,32 @@
 
 <script setup lang="ts">
 import {UserType} from "../models/user";
+import myAxios from "../plugins/myAxios";
+import {Toast} from "vant";
+
+/**
+ * 添加好友
+ *
+ * @param targetUserId - 目标用户 id
+ */
+const addFriend = async (targetUserId: number) => {
+  const resultData = await myAxios.post("/friend/apply", {
+    receiverId: targetUserId,
+    messageType: 1
+  });
+
+  if (resultData.data.code === 0) {
+    Toast.success("等待对方同意");
+  } else {
+    Toast.fail(resultData.data.description);
+  }
+}
 
 interface UserCardListProps {
   userList: UserType[];
 }
 
-const props = withDefaults( defineProps<UserCardListProps>(), {
+const props = withDefaults(defineProps<UserCardListProps>(), {
   // @ts-ignore
   userList: [] as UserType[],
 });
