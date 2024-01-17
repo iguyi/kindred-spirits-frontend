@@ -10,7 +10,7 @@
       <van-button
           type="primary"
           size="mini"
-          @click="view"
+          @click="showUser(user.id)"
       >
         查看
       </van-button>
@@ -49,12 +49,40 @@
       </div>
     </template>
   </van-cell>
+
+  <van-dialog
+      v-model:show="show"
+      title="对方详情"
+      show-cancel-button
+      teleport="body"
+      confirm-button-text="添加"
+      confirm-button-color="#008080"
+      cancel-button-color="#ee0a24"
+      theme='round-button'
+      @confirm="addFriend(showUserData.id)"
+      @close="showDown"
+  >
+    <van-cell title="昵称" :value="showUserData.username"/>
+    <van-cell title="账号" :value="showUserData.userAccount"/>
+    <van-cell title="性别" :value="showUserData.gender===0?'男':'女'"/>
+    <van-cell title="标签">
+      <van-tag
+          type="success"
+          v-for="tag in showUserData.tags"
+          style="margin-right: 3px"
+      >
+        {{ tag }}
+      </van-tag>
+    </van-cell>
+    <van-cell title="个人简介" :value="showUserData.profile"/>
+  </van-dialog>
 </template>
 
 <script setup lang="ts">
 import {UserType} from "../models/user";
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
+import {ref} from "vue";
 
 /**
  * 添加好友
@@ -72,6 +100,43 @@ const addFriend = async (targetUserId: number) => {
   } else {
     Toast.fail(resultData.data.description);
   }
+}
+
+/**
+ * 被查看用户的详细数据
+ */
+const showUserData = ref({});
+
+/**
+ * 是否展示用户详细数据
+ */
+const show = ref(false);
+
+/**
+ * 查看用户详细详细
+ *
+ * @param userId - 用户 id
+ */
+const showUser = async (userId: number) => {
+  let result = await myAxios.get('/user/search/id', {
+    params: {
+      id: userId
+    }
+  });
+
+  if (!result || result.data.code !== 0) {
+    Toast.fail("查询错误");
+    return;
+  }
+
+  result.data.data.tags = JSON.parse(result.data.data.tags);
+  showUserData.value = result.data.data;
+
+  show.value = true;
+}
+
+const showDown = () => {
+  showUserData.value = {};
 }
 
 interface UserCardListProps {
