@@ -44,7 +44,7 @@
             {{ tag }}
           </van-tag>
           <br>
-          <span>{{ user.profile }}</span>
+          <span v-if="user.profile">{{ user.profile.length<10?user.profile:user.profile.substring(0,10)+'...'}}</span>
         </div>
       </div>
     </template>
@@ -66,15 +66,17 @@
     <van-cell title="账号" :value="showUserData.userAccount"/>
     <van-cell title="性别" :value="showUserData.gender===0?'男':'女'"/>
     <van-cell title="标签">
-      <van-tag
-          type="success"
-          v-for="tag in showUserData.tags"
-          style="margin-right: 3px"
-      >
-        {{ tag }}
-      </van-tag>
+      <template #label>
+        <van-tag
+            type="success"
+            v-for="tag in showUserData.tags"
+            style="margin-right: 3px"
+        >
+          {{ tag }}
+        </van-tag>
+      </template>
     </van-cell>
-    <van-cell title="个人简介" :value="showUserData.profile"/>
+    <van-cell title="个人简介" :label="showUserData.profile"/>
   </van-dialog>
 </template>
 
