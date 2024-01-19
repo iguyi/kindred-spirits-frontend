@@ -134,8 +134,10 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
+import myAxios from "../../plugins/myAxios";
+import {Toast} from "vant";
 
 const router = useRouter();
 
@@ -144,7 +146,8 @@ const onClickLeft = () => {
 };
 
 // 可选标签列表 - 源数据
-let originTagList = [
+let originTagList;
+/*let originTagList = [
   {
     text: '方向',
     children: [
@@ -153,7 +156,7 @@ let originTagList = [
       {text: 'C++', id: 'C++'},
       {text: 'go', id: 'go'},
       {text: '前端', id: '前端'},
-      /*{text: 'C++', id: 'C++', disabled: true},*/
+      /!*{text: 'C++', id: 'C++', disabled: true},*!/
     ],
   },
   {
@@ -163,12 +166,38 @@ let originTagList = [
       {text: '女', id: '女'},
     ],
   },
-];
+];*/
 
 // 可选标签列表
 let tagList = ref(originTagList);
 
 const searchTeamText = ref('');
+
+onMounted(async () => {
+  const result = await myAxios.get("/tag/simple/list");
+  if (!result || result.data.code !== 0) {
+    Toast.fail("标签数据数据异常");
+   return;
+  }
+  let tempData = [];
+  result.data.data.forEach(childrenTagList => {
+    let parentName;
+    let childrenList = [];
+
+    childrenTagList.forEach(tag => {
+      let tagName = tag.tagName;
+      if (tag.isParent === 1) {
+        parentName = tagName;
+      } else {
+        childrenList.push({text: tagName, id: tagName});
+      }
+    });
+
+    tempData.push({text: parentName, children: childrenList})
+  });
+  originTagList = tempData;
+  tagList.value = originTagList;
+});
 
 /**
  * 搜索条件过滤
