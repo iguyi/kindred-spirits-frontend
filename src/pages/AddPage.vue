@@ -56,7 +56,6 @@ const loadData = async () => {
     })
   } else {
     // 普通模式
-    // todo id 得到的是浮点数
     userListData = await myAxios.get('/user/recommend', {
       params: {
         pageSize: dataNum,
