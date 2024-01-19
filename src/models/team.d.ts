@@ -8,7 +8,7 @@ export type TeamType = {
     name: string;
     description: string;
     maxNum: number;
-    status: number;  // todo 定义枚举
+    status: number;
     createUser?: UserType;
     leaderUser?: UserType;
     expireTime?: Date;
