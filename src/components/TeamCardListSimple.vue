@@ -68,12 +68,13 @@ const sendMessage = (teamId, teamName) => {
 .custom-cell {
   display: flex;
   align-items: center; /* 垂直居中对齐 */
+  margin-left: 10px;
 }
 
 .custom-tag {
   margin-left: 10px;
   margin-right: 4px;
   vertical-align: middle;
-  font-size: 15px;
+  font-size: 20px;
 }
 </style>
