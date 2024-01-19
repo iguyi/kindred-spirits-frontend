@@ -24,7 +24,6 @@ export type ChatRoomType = {
     lastRecord: string;
 
     /**
-     * todo 定义枚举
      * 消息类型
      */
     chatType: number;
