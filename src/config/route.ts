@@ -13,6 +13,7 @@ import EditProfilePage from '../pages/edit/EditProfilePage.vue'
 import EditGenderPage from '../pages/edit/EditGenderPage.vue'
 import EditPhonePage from '../pages/edit/EditPhonePage.vue'
 import EditEmailPage from '../pages/edit/EditEmailPage.vue'
+import EditTagPage from '../pages/edit/EditTagPage.vue'
 import EditAvatarPage from '../pages/edit/EditAvatarPage.vue'
 import PrivateChatRoomPage from '../pages/room/PrivateChatRoomPage.vue'
 import TeamChatRoomPage from '../pages/room/TeamChatRoomPage.vue'
@@ -37,6 +38,7 @@ const routes = [
     {path: '/edit/phone', component: EditPhonePage, meta: {navBar: false, vanTabbar: false, title: '编辑-手机号'}},
     {path: '/edit/email', component: EditEmailPage, meta: {navBar: false, vanTabbar: false, title: '编辑-邮箱'}},
     {path: '/edit/avatar', component: EditAvatarPage, meta: {navBar: false, vanTabbar: false, title: '编辑-头像'}},
+    {path: '/edit/tag', component: EditTagPage, meta: {navBar: false, vanTabbar: false, title: '编辑-标签'}},
     {path: '/chat/private', component: PrivateChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '好友聊天'}},
     {path: '/chat/team', component: TeamChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '队伍聊天'}},
 ]
