@@ -1,4 +1,3 @@
-<!-- todo 样式待改, 查看 QQ 好友列表 -->
 <template>
   <van-cell
       v-for="friend in friendList"
