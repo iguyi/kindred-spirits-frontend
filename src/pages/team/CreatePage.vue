@@ -102,7 +102,6 @@ const showPicker = ref(false);
 const minDate = new Date();
 
 const onSubmit = async () => {
-  // todo 参数校验
   const tempDate = new Date(addTeamData.value.expireTime);
   const postData = {
     ...addTeamData.value,
