@@ -35,7 +35,7 @@
         is-link
         center
         :value="user.tags"
-        @click="toEdit('/edit/tag', user.profile)"
+        @click="toEdit('/edit/tag', JSON.stringify(user.tags))"
     >
       <van-tag
           type="success"
