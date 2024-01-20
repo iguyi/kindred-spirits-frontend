@@ -277,7 +277,7 @@ const createContent = (otherUser, currentUser, text) => {
     html = `
       <div class="message self">
         <div class="myInfo info">
-            <img :alt=${currentUser.username} class="avatar" onclick="showUser(${currentUser.id})" src=${currentUser.avatarUrl}>
+            <img :alt=${currentUser.username} class="avatar" src=${currentUser.avatarUrl}>
         </div>
         <p class="text">${text}</p>
       </div>
@@ -286,7 +286,7 @@ const createContent = (otherUser, currentUser, text) => {
     // remoteUser表示远程用户聊天消息，灰色的气泡
     html = `
       <div class="message other">
-        <img :alt=${otherUser.username} class="avatar" onclick="showUser(${otherUser.id})" src=${otherUser.avatarUrl}>
+        <img :alt=${otherUser.username} class="avatar" src=${otherUser.avatarUrl}>
         <div class="info">
           <span class="username">${otherUser.username}</span>
           <p class="text" >${text}</p>
