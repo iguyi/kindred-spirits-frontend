@@ -283,7 +283,7 @@ const createContent = (friendUser, currentUser, text) => {
     html = `
       <div class="message self">
         <div class="myInfo info">
-            <img :alt=${currentUser.username} class="avatar" onclick="showUser(${currentUser.id})" src=${currentUser.avatarUrl}>
+            <img :alt=${currentUser.username} class="avatar" src=${currentUser.avatarUrl}>
         </div>
         <p class="text">${text}</p>
       </div>
@@ -292,7 +292,7 @@ const createContent = (friendUser, currentUser, text) => {
     // remoteUser表示远程用户聊天消息，灰色的气泡
     html = `
       <div class="message other">
-        <img :alt=${friendUser.username} class="avatar" onclick="showUser(${friendUser.id})" src=${friendUser.avatarUrl}>
+        <img :alt=${friendUser.username} class="avatar" src=${friendUser.avatarUrl}>
         <div class="info">
           <p class="text" >${text}</p>
         </div>
