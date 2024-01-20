@@ -21,7 +21,7 @@
               round
               width="30px"
               height="30px"
-              src="http://localhost:3000/public/avatar/team/default_avatar.jpg"
+              :src="team.avatarUrl"
           />
         </div>
         <div style="margin-left: 5px">
