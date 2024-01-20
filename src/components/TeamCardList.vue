@@ -23,7 +23,7 @@
               round
               width="80px"
               height="80px"
-              src="http://localhost:3000/public/avatar/team/default_avatar.jpg"
+              :src="team.avatarUrl"
           />
         </div>
         <!-- 用户信息 -->
