@@ -39,6 +39,7 @@ import {nextTick, onMounted, ref} from "vue";
 import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
 import {getCurrentUser} from "../../services/user";
+import {webSocketCache} from "../../states/chat";
 
 const router = useRouter();
 const route = useRoute();
@@ -141,14 +142,20 @@ const init = () => {
     return;
   }
 
-  // 关闭旧的 WebSocket 连接, 并开启新的 WebSocket 连接
+  /*// 关闭旧的 WebSocket 连接, 并开启新的 WebSocket 连接
   // 因为旧的是私聊, 但是当前的聊天室可能是被的类型
   if (socket != null) {
     socket.close();
     socket = null;
-  }
+  }*/
 
   // 根据 socketUrl 开启一个新的 WebSocket 服务
+  let socketKey = `${uid}-${stats.value.team.teamId}`
+  if (webSocketCache.teamChatMap.hasOwnProperty(socketKey)) {
+    socket = webSocketCache.teamChatMap[socketKey];
+    return;
+  }
+
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/${stats.value.team.teamId}`;
   socket = new WebSocket(socketUrl);
 
@@ -184,7 +191,7 @@ const init = () => {
   // 设置 WebSocket 关闭时执行的动作
   socket.onclose = function () {
     stopHeartbeat();
-    setTimeout(init, 5000); // 5秒后重连
+    // setTimeout(init, 5000); // 5秒后重连
   };
 
   // 设置 WebSocket 发生错误事件时执行的动作
