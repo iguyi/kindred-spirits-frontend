@@ -74,11 +74,7 @@
     <!-- 队伍成员   -->
     <van-collapse v-model="activeNames">
       <van-collapse-item :title="`队伍成员(剩余 ${teamDetail.maxNum-teamDetail.num} 个位置)`" name="1">
-        <van-cell
-            v-for="user in teamDetail.userList"
-            is-link
-            center
-        >
+        <van-cell v-for="user in teamDetail.userList">
           <template #value>
             <div class="custom-cell">
               <div>
@@ -117,6 +113,41 @@
               </div>
             </div>
           </template>
+
+          <template #extra>
+            <van-button
+                v-if="currentUser.id !== user.id"
+                @click="show(user.id)"
+                size="mini"
+                type="success"
+            >
+              查看
+            </van-button>
+            <van-button
+                v-if="user.id !== teamDetail.leaderId"
+                @click="abdicator(user.id)"
+                size="mini"
+                type="warning"
+            >
+              让位
+            </van-button>
+            <van-button
+                v-if="user.id !== teamDetail.leaderId"
+                @click="remove(user.id)"
+                size="mini"
+                type="danger"
+            >
+              移出
+            </van-button>
+            <van-button
+                v-if="currentUser.id === user.id"
+                @click="quit()"
+                size="mini"
+                type="danger"
+            >
+              退出
+            </van-button>
+          </template>
         </van-cell>
       </van-collapse-item>
     </van-collapse>
@@ -139,6 +170,7 @@ import {useRoute, useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
+import {getCurrentUser} from "../../services/user";
 
 const router = useRouter();
 const route = useRoute();
@@ -147,7 +179,12 @@ const teamDetail = ref({});
 
 const activeNames = ref(['1']);
 
+// 当前登录用户
+const currentUser = ref({});
+
 onMounted(async () => {
+  currentUser.value = await getCurrentUser();
+
   const {teamId} = route.query;
   const teamMessage = await myAxios.get("/team/check", {
     params: {
@@ -160,6 +197,40 @@ onMounted(async () => {
   }
   teamDetail.value = teamMessage.data.data;
 });
+
+/**
+ * todo 查看其他队员
+ *
+ * @param id - 被查看队员的 id
+ */
+const show = (id: number) => {
+  Toast.success(`todo 对方 id ${id}`);
+}
+
+/**
+ * todo 队长位置转让
+ *
+ * @param id - 被任命为队长的用户的 id
+ */
+const abdicator = (id: number) => {
+  Toast.success(`todo 对方 id ${id}`);
+}
+
+/**
+ * todo 踢人
+ *
+ * @param id - 被移出队伍者的 id
+ */
+const remove = (id: number) => {
+  Toast.success(`todo 对方 id ${id}`);
+}
+
+/**
+ * todo 退出队伍
+ */
+const quit = () => {
+  Toast.success(`todo 退出退伍`);
+}
 
 /**
  * 回退
