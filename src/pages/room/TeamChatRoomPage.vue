@@ -255,11 +255,15 @@ const onClickLeft = () => {
 }
 
 /**
- * todo 查看好友信息
+ * todo 查看队伍信息
  */
 const onClickRight = () => {
-  // Toast.fail('TODO 查询好友信息');
-  Toast.fail("todo");
+  router.push({
+    path: '/team/home',
+    query: {
+      "teamId": stats.value.team.teamId,
+    }
+  });
 }
 
 /**
