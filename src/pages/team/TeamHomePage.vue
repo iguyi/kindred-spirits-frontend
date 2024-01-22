@@ -12,7 +12,7 @@
     </template>
   </van-nav-bar>
 
-  <template v-if="teamDetail">
+  <template v-if="teamDetail !== {}">
     <!-- 队伍头像   -->
     <van-cell is-link center>
       <template #title>
@@ -129,7 +129,7 @@
               查看
             </van-button>
             <van-button
-                v-if="user.id !== teamDetail.leaderId"
+                v-if="currentUser.id === teamDetail.leaderId && currentUser.id !== user.id"
                 @click="abdicator(user.id)"
                 size="mini"
                 type="warning"
@@ -137,7 +137,7 @@
               让位
             </van-button>
             <van-button
-                v-if="user.id !== teamDetail.leaderId"
+                v-if="currentUser.id === teamDetail.leaderId && currentUser.id !== user.id"
                 @click="remove(user.id)"
                 size="mini"
                 type="danger"
