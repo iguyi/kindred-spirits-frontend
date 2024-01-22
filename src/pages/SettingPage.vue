@@ -98,6 +98,7 @@ import {onMounted, ref} from "vue";
 import {Toast} from "vant";
 import {clearCacheUser, getCurrentUser} from "../services/user";
 import myAxios from "../plugins/myAxios";
+import {webSocketCache} from "../states/chat";
 
 // 当前登录用户
 const user = ref({});
@@ -128,6 +129,16 @@ const logout = async () => {
   await myAxios.post('/user/logout');
   await clearCacheUser();
   await router.replace('/user/login');
+  if (webSocketCache.privateChat !== null) {
+    webSocketCache.privateChat.close();
+    webSocketCache.privateChat = null;
+  }
+
+  let teamChatMap = webSocketCache.teamChatMap;
+  for (let key in teamChatMap) {
+    teamChatMap[key].close();
+    delete teamChatMap[key];
+  }
 }
 </script>
 
