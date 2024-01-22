@@ -231,7 +231,8 @@ const remove = (id: number) => {
 }
 
 /**
- * todo 退出队伍
+ * todo 退出成功后, 关闭对应的 WebSocket 连接
+ * 退出队伍
  */
 const quit = async () => {
   const res = await myAxios.post('/team/quit', {
