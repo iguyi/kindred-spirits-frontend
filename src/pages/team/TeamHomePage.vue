@@ -26,17 +26,22 @@
       />
     </van-cell>
 
-    <!--  队伍介绍  -->
+    <!--  队伍名称 -->
     <van-cell center is-link>
       <template #title>
-        <div style="font-size: 15px">队伍介绍</div>
+        <div style="font-size: 15px">队伍名称</div>
       </template>
       <template #value>
         <div style="font-size: 15px">
-          {{ teamDetail.name }}
+          {{ `${teamDetail.name}  ` }}
+          <van-tag v-if="teamDetail.status === 0" round size="mini" type="success">公开</van-tag>
+          <van-tag v-if="teamDetail.status === 1" round size="mini" type="danger">私有</van-tag>
+          <van-tag v-if="teamDetail.status === 2" round size="mini" type="warning">加密</van-tag>
         </div>
       </template>
     </van-cell>
+
+    <!-- 队伍介绍   -->
     <van-cell is-link>
       <template #title>
         <div style="font-size: 15px">队伍介绍</div>
@@ -89,21 +94,21 @@
                 <span class="custom-title">{{ user.username }}</span><br>
                 <span class="custom-tag">
                   <van-tag
-                      type="success"
+                      type="primary"
                       v-if="user.id === teamDetail.userId"
                       style="margin-left: 3px; margin-right: 3px"
                   >
                     建队
                   </van-tag>
                   <van-tag
-                      type="success"
+                      type="primary"
                       v-if="user.id === teamDetail.leaderId"
                       style="margin-left: 3px; margin-right: 3px"
                   >
                     队长
                   </van-tag>
                   <van-tag
-                      type="success"
+                      type="primary"
                       v-if="user.id !== teamDetail.userId && user.id !== teamDetail.leaderId"
                       style="margin-left: 3px; margin-right: 3px"
                   >
