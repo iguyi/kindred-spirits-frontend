@@ -228,8 +228,22 @@ const remove = (id: number) => {
 /**
  * todo 退出队伍
  */
-const quit = () => {
-  Toast.success(`todo 退出退伍`);
+const quit = async () => {
+  const res = await myAxios.post('/team/quit', {
+    'teamId': teamDetail.value.id
+  }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (res && res.data.code === 0 && res.data.data === true) {
+    Toast.success('已退出队伍');
+    await router.push('/');
+    return;
+  }
+
+  Toast.fail(`${res.data.description}`);
 }
 
 /**
