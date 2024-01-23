@@ -142,13 +142,6 @@ const init = () => {
     return;
   }
 
-  /*// 关闭旧的 WebSocket 连接, 并开启新的 WebSocket 连接
-  // 因为旧的是私聊, 但是当前的聊天室可能是被的类型
-  if (socket != null) {
-    socket.close();
-    socket = null;
-  }*/
-
   // 根据 socketUrl 开启一个新的 WebSocket 服务
   let socketKey = `${uid}-${stats.value.team.teamId}`
   if (webSocketCache.teamChatMap.hasOwnProperty(socketKey)) {
@@ -158,6 +151,7 @@ const init = () => {
 
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/${stats.value.team.teamId}`;
   socket = new WebSocket(socketUrl);
+  webSocketCache.teamChatMap[socketKey] = socket;
 
   // 打开事件
   socket.onopen = function () {
