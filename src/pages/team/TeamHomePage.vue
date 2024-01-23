@@ -215,16 +215,26 @@ const show = (id: number) => {
 }
 
 /**
- * todo 队长位置转让
+ * 队长位置转让
  *
  * @param id - 被任命为队长的用户的 id
  */
-const abdicator = (id: number) => {
-  Toast.success(`todo 对方 id ${id}`);
+const abdicator = async (id: number) => {
+  const res = await myAxios.post('/team/abdicator', {
+    memberId: id,
+    teamId: teamDetail.value.id
+  });
+
+  if (res && res.data.code === 0 && res.data.data === true) {
+    teamDetail.value.leaderId = id;
+    Toast.success("操作成功");
+    return;
+  }
+  Toast.fail(res.data.description);
 }
 
 /**
- * todo 踢人
+ * 踢人
  *
  * @param id - 被移出队伍者的 id
  */
