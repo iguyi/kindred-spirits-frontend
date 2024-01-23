@@ -246,14 +246,14 @@ const quit = async () => {
   });
 
   if (res && res.data.code === 0 && res.data.data === true) {
-    await router.push('/');
     let socketKey = `${currentUser.value.id}-${teamDetail.value.id}`
     let teamChatMap = webSocketCache.teamChatMap;
     if (teamChatMap.hasOwnProperty(socketKey)) {
-      teamChatMap[socketKey].close();
+      await teamChatMap[socketKey].close();
       delete teamChatMap[socketKey];
     }
     Toast.success('已退出队伍');
+    await router.push('/');
     return;
   }
 
