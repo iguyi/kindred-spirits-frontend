@@ -76,7 +76,7 @@
     <van-cell
         title="修改密码"
         is-link
-        @click="updatePassword"
+        @click="toEdit('/edit/pwd', '')"
     />
 
     <van-cell
@@ -95,7 +95,6 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
-import {Toast} from "vant";
 import {clearCacheUser, getCurrentUser} from "../services/user";
 import myAxios from "../plugins/myAxios";
 import {webSocketCache} from "../states/chat";
