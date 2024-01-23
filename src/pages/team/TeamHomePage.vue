@@ -138,7 +138,7 @@
             </van-button>
             <van-button
                 v-if="currentUser.id === teamDetail.leaderId && currentUser.id !== user.id"
-                @click="remove(user.id)"
+                @click="kickOut(user.id)"
                 size="mini"
                 type="danger"
             >
@@ -228,12 +228,22 @@ const abdicator = (id: number) => {
  *
  * @param id - 被移出队伍者的 id
  */
-const remove = (id: number) => {
-  Toast.success(`todo 对方 id ${id}`);
+const kickOut = async (id: number) => {
+  const res = await myAxios.post('/team/kick', {
+    memberId: id,
+    teamId: teamDetail.value.id
+  });
+
+  if (res && res.data.code === 0 && res.data.data === true) {
+    teamDetail.value.userList = teamDetail.value.userList.filter(user => user.id !== id);
+    teamDetail.value.num = teamDetail.value.num - 1;
+    Toast.success('操作成功');
+    return;
+  }
+  Toast.fail(res.data.description);
 }
 
 /**
- * todo 退出成功后, 关闭对应的 WebSocket 连接
  * 退出队伍
  */
 const quit = async () => {
