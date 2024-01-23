@@ -176,16 +176,18 @@ import {onMounted, ref} from "vue";
 import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
 import {getCurrentUser} from "../../services/user";
+import {webSocketCache} from "../../states/chat";
+import {UserType} from "../../models/user";
 
 const router = useRouter();
 const route = useRoute();
 
-const teamDetail = ref({});
+const teamDetail = ref({id: -1});
 
 const activeNames = ref(['1']);
 
 // 当前登录用户
-const currentUser = ref({});
+const currentUser = ref<UserType>();
 
 onMounted(async () => {
   currentUser.value = await getCurrentUser();
@@ -244,8 +246,14 @@ const quit = async () => {
   });
 
   if (res && res.data.code === 0 && res.data.data === true) {
-    Toast.success('已退出队伍');
     await router.push('/');
+    let socketKey = `${currentUser.value.id}-${teamDetail.value.id}`
+    let teamChatMap = webSocketCache.teamChatMap;
+    if (teamChatMap.hasOwnProperty(socketKey)) {
+      teamChatMap[socketKey].close();
+      delete teamChatMap[socketKey];
+    }
+    Toast.success('已退出队伍');
     return;
   }
 
