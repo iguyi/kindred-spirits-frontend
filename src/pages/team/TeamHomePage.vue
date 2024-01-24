@@ -124,7 +124,7 @@
           <template #extra>
             <van-button
                 v-if="currentUser.id !== user.id"
-                @click="show(user.id)"
+                @click="showUser(user.id)"
                 size="mini"
                 type="success"
             >
@@ -170,6 +170,34 @@
     </van-cell>
   </template>
 
+  <van-dialog
+      v-model:show="show"
+      title="对方详情"
+      show-cancel-button
+      teleport="body"
+      confirm-button-text="添加"
+      confirm-button-color="#008080"
+      cancel-button-color="#ee0a24"
+      theme='round-button'
+      @confirm="addFriend(showUserData.id)"
+      @close="showDown"
+  >
+    <van-cell title="昵称" :value="showUserData.username"/>
+    <van-cell title="账号" :value="showUserData.userAccount"/>
+    <van-cell title="性别" :value="showUserData.gender===0?'男':'女'"/>
+    <van-cell title="标签">
+      <template #label>
+        <van-tag
+            type="success"
+            v-for="tag in showUserData.tags"
+            style="margin-right: 3px"
+        >
+          {{ tag }}
+        </van-tag>
+      </template>
+    </van-cell>
+    <van-cell title="个人简介" :label="showUserData.profile"/>
+  </van-dialog>
 </template>
 
 <script setup lang="ts">
@@ -179,6 +207,7 @@ import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
 import {getCurrentUser} from "../../services/user";
 import {webSocketCache} from "../../states/chat";
+import copyToClipboard from 'clipboard-copy';
 import {UserType} from "../../models/user";
 
 const router = useRouter();
@@ -190,6 +219,10 @@ const activeNames = ref(['1']);
 
 // 当前登录用户
 const currentUser = ref<UserType>();
+
+// 用于展示队伍成员消息
+const show = ref(false);
+const showUserData = ref({});
 
 onMounted(async () => {
   currentUser.value = await getCurrentUser();
@@ -225,12 +258,26 @@ const refreshTeamLink = async () => {
 }
 
 /**
- * todo 查看其他队员
+ * 查看其他队员
  *
  * @param id - 被查看队员的 id
  */
-const show = (id: number) => {
-  Toast.success(`todo 对方 id ${id}`);
+const showUser = async (id: number) => {
+  let result = await myAxios.get('/user/search/id', {
+    params: {
+      id: id
+    }
+  });
+
+  if (!result || result.data.code !== 0) {
+    Toast.fail("查询错误");
+    return;
+  }
+
+  result.data.data.tags = JSON.parse(result.data.data.tags);
+  showUserData.value = result.data.data;
+
+  show.value = true;
 }
 
 /**
@@ -305,7 +352,10 @@ const quit = async () => {
 const onClickLeft = () => {
   router.back();
 }
-import copyToClipboard from 'clipboard-copy';
+
+/**
+ * 复制入队邀请码
+ */
 const copy =  async () => {
   try {
     await copyToClipboard(teamDetail.value.teamLink);
@@ -314,6 +364,31 @@ const copy =  async () => {
     Toast.fail("复制失败");
     console.error('无法复制', err);
   }
+}
+
+/**
+ * 添加好友
+ *
+ * @param targetUserId - 目标用户 id
+ */
+const addFriend = async (targetUserId: number) => {
+  const resultData = await myAxios.post("/friend/apply", {
+    receiverId: targetUserId,
+    messageType: 1
+  });
+
+  if (resultData.data.code === 0) {
+    Toast.success("等待对方同意");
+  } else {
+    Toast.fail(resultData.data.description);
+  }
+}
+
+/**
+ * 关闭弹窗时的回调函数
+ */
+const showDown = () => {
+  showUserData.value = {};
 }
 
 </script>
