@@ -19,7 +19,7 @@ import EditAvatarPage from '../pages/edit/user/EditAvatarPage.vue'
 import EditPwdPage from '../pages/edit/user/EditPwdPage.vue'
 import PrivateChatRoomPage from '../pages/room/PrivateChatRoomPage.vue'
 import TeamChatRoomPage from '../pages/room/TeamChatRoomPage.vue'
-import EditTeamAvatarPage from '../pages/edit/team/EditAvatarPage.vue'
+import EditTeamAvatarPage from '../pages/edit/team/EditTeamAvatarPage.vue'
 import EditTeamBasePage from '../pages/edit/team/EditTeamBasePage.vue'
 import EditTeamDescriptionPage from '../pages/edit/team/EditTeamDescriptionPage.vue'
 
