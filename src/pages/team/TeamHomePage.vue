@@ -182,21 +182,7 @@
       @confirm="addFriend(showUserData.id)"
       @close="showDown"
   >
-    <van-cell title="昵称" :value="showUserData.username"/>
-    <van-cell title="账号" :value="showUserData.userAccount"/>
-    <van-cell title="性别" :value="showUserData.gender===0?'男':'女'"/>
-    <van-cell title="标签">
-      <template #label>
-        <van-tag
-            type="success"
-            v-for="tag in showUserData.tags"
-            style="margin-right: 3px"
-        >
-          {{ tag }}
-        </van-tag>
-      </template>
-    </van-cell>
-    <van-cell title="个人简介" :label="showUserData.profile"/>
+    <ShowUser :user="showUserData"/>
   </van-dialog>
 </template>
 
@@ -209,6 +195,7 @@ import {getCurrentUser} from "../../services/user";
 import {webSocketCache} from "../../states/chat";
 import copyToClipboard from 'clipboard-copy';
 import {UserType} from "../../models/user";
+import ShowUser from "../../components/ShowUser.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -356,7 +343,7 @@ const onClickLeft = () => {
 /**
  * 复制入队邀请码
  */
-const copy =  async () => {
+const copy = async () => {
   try {
     await copyToClipboard(teamDetail.value.teamLink);
     Toast.success("邀请码已复制");
