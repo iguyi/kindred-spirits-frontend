@@ -56,13 +56,15 @@
     <!-- 入队链接   -->
     <van-cell>
       <template #title>
-        <div style="font-size: 15px">入队链接</div>
+        <div style="font-size: 15px">邀请码</div>
       </template>
       <template #label>
         <div style="font-size: 15px; margin-right: 5px">{{ teamDetail.teamLink ?? "无" }}</div>
       </template>
       <template #extra>
-        <van-button round size="mini" type="success" icon="replay"/>
+
+        <van-button round size="mini" type="success" icon="link-o" @click="copy"/>
+        <van-button round size="mini" type="success" icon="replay" @click="refreshTeamLink"/>
       </template>
     </van-cell>
 
@@ -206,6 +208,23 @@ onMounted(async () => {
 });
 
 /**
+ * 更新入队邀请
+ */
+const refreshTeamLink = async () => {
+  const res = await myAxios.get("/team/link", {
+    params: {
+      teamId: teamDetail.value.id
+    }
+  });
+  if (res && res.data.code === 0 && res.data.data) {
+    teamDetail.value.teamLink = res.data.data;
+    Toast.success("更新成功");
+    return;
+  }
+  Toast.fail(res.data.description);
+}
+
+/**
  * todo 查看其他队员
  *
  * @param id - 被查看队员的 id
@@ -285,6 +304,16 @@ const quit = async () => {
  */
 const onClickLeft = () => {
   router.back();
+}
+import copyToClipboard from 'clipboard-copy';
+const copy =  async () => {
+  try {
+    await copyToClipboard(teamDetail.value.teamLink);
+    Toast.success("邀请码已复制");
+  } catch (err) {
+    Toast.fail("复制失败");
+    console.error('无法复制', err);
+  }
 }
 
 </script>
