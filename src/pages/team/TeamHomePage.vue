@@ -30,21 +30,23 @@
       />
     </van-cell>
 
-    <!--  队伍名称 -->
+    <!--  队伍基本信息: 名称、状态 -->
     <van-cell
         @click='toEdit("/edit/team/base", `{"name": "${teamDetail.name}", "status": "${teamDetail.status}"}`)'
         center
         is-link
     >
       <template #title>
-        <div style="font-size: 15px">队伍名称</div>
+        <div style="font-size: 15px">
+          所属队伍
+          <van-tag v-if="teamDetail.status === 0" round size="mini" type="success" style="margin-left: 5px">公开</van-tag>
+          <van-tag v-if="teamDetail.status === 1" round size="mini" type="danger" style="margin-left: 5px">私有</van-tag>
+          <van-tag v-if="teamDetail.status === 2" round size="mini" type="warning" style="margin-left: 5px">加密</van-tag>
+        </div>
       </template>
       <template #value>
         <div style="font-size: 15px">
           {{ `${teamDetail.name}  ` }}
-          <van-tag v-if="teamDetail.status === 0" round size="mini" type="success">公开</van-tag>
-          <van-tag v-if="teamDetail.status === 1" round size="mini" type="danger">私有</van-tag>
-          <van-tag v-if="teamDetail.status === 2" round size="mini" type="warning">加密</van-tag>
         </div>
       </template>
     </van-cell>
