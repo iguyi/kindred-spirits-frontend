@@ -17,32 +17,23 @@
     </template>
   </van-nav-bar>
 
-  <div>
-    <van-cell
-        title="头像"
-        center
-    >
-      <van-uploader
-          :after-read="afterRead"
-          :max-size="100 * 1024"
-          @oversize="onOversize">
-        <van-image
-            round
-            width="48px"
-            height="48px"
-            :src="avatarUrl.url === null?editUser.currentValue:avatarUrl.url"
-        />
-      </van-uploader>
-    </van-cell>
-  </div>
+  <van-field
+      v-model="text"
+      rows="4"
+      autosize
+      label="个人简介"
+      type="textarea"
+      :placeholder="editUser.currentValue"
+      :rules="[{ required: 0, message: '简单介绍一下自己吧' }]"
+  />
 </template>
 
 <script setup>
-import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
 import {Toast} from "vant";
-import myAxios from "../../plugins/myAxios.ts";
-import {getCurrentUser, updateCacheUser} from "../../services/user.ts";
+import {useRoute, useRouter} from "vue-router";
+import {getCurrentUser, updateCacheUser} from "../../../services/user";
+import myAxios from "../../../plugins/myAxios";
 
 const router = useRouter();
 const onClickLeft = () => {
@@ -52,9 +43,7 @@ const onClickLeft = () => {
 const route = useRoute();
 const editUser = ref({currentValue: route.query.currentValue});
 
-const avatarUrl = ref({url: null});
-// 头像的数据流
-const avatarData = ref({data: null});
+const text = ref('');
 
 let res;
 const onClickRight = async () => {
@@ -65,15 +54,11 @@ const onClickRight = async () => {
     return;
   }
 
-  res = await myAxios.post('/common/avatar/user', {
-    'id': Number(currentUser.id),
-    'avatar': avatarData.value.data.file,
-  }, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+  const textValue = text.value;
+  res = await myAxios.post('/user/update', {
+    'id': currentUser.id,
+    'profile': textValue === '' ? currentUser : textValue,
   });
-
   if (res.data.code === 0 && res.data.data > 0) {
     await updateCacheUser();
     Toast.success('修改成功');
@@ -83,23 +68,6 @@ const onClickRight = async () => {
 
   router.back();
 }
-
-//-------- 头像 --------
-
-/**
- * 上传头像
- */
-const afterRead = async (file) => {
-  avatarUrl.value.url = file.objectUrl;
-  avatarData.value.data = file;
-};
-
-/**
- * 头像大小不能超过 100kb
- */
-const onOversize = () => {
-  Toast('头像大小不能超过 100kb');
-};
 </script>
 
 <style scoped>

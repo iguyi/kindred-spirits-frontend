@@ -17,23 +17,27 @@
     </template>
   </van-nav-bar>
 
-  <van-field
-      v-model="text"
-      rows="4"
-      autosize
-      label="个人简介"
-      type="textarea"
-      :placeholder="editUser.currentValue"
-      :rules="[{ required: 0, message: '简单介绍一下自己吧' }]"
-  />
+  <!-- 修改文本类信息 -->
+  <van-form>
+    <van-cell-group inset>
+      <van-field
+          v-model="text"
+          name="username"
+          label="昵称"
+          :placeholder="editUser.currentValue"
+          :rules="[{ required: 1, message: '请填写昵称' }]"
+      />
+    </van-cell-group>
+  </van-form>
+
 </template>
 
 <script setup>
 import {ref} from "vue";
 import {Toast} from "vant";
 import {useRoute, useRouter} from "vue-router";
-import {getCurrentUser, updateCacheUser} from "../../services/user";
-import myAxios from "../../plugins/myAxios";
+import {getCurrentUser, updateCacheUser} from "../../../services/user";
+import myAxios from "../../../plugins/myAxios";
 
 const router = useRouter();
 const onClickLeft = () => {
@@ -57,7 +61,7 @@ const onClickRight = async () => {
   const textValue = text.value;
   res = await myAxios.post('/user/update', {
     'id': currentUser.id,
-    'profile': textValue === '' ? currentUser : textValue,
+    'username': textValue === '' ? currentUser : textValue,
   });
   if (res.data.code === 0 && res.data.data > 0) {
     await updateCacheUser();

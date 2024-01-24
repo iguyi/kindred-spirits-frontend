@@ -17,27 +17,30 @@
     </template>
   </van-nav-bar>
 
-  <!-- 修改文本类信息 -->
-  <van-form>
-    <van-cell-group inset>
-      <van-field
-          v-model="text"
-          name="username"
-          label="手机号"
-          :placeholder="editUser.currentValue"
-          :rules="[{ required: 1, message: '请填写手机号' }]"
-      />
-    </van-cell-group>
-  </van-form>
-
+  <van-field
+      v-model="result"
+      is-link
+      readonly
+      name="picker"
+      label="性别"
+      :placeholder="(editUser.currentValue === '0')?`男`:`女`"
+      @click="showPicker = true"
+  />
+  <van-popup v-model:show="showPicker" position="bottom">
+    <van-picker
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+    />
+  </van-popup>
 </template>
 
 <script setup>
+import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
 import {Toast} from "vant";
-import {useRoute, useRouter} from "vue-router";
-import {getCurrentUser, updateCacheUser} from "../../services/user";
-import myAxios from "../../plugins/myAxios";
+import myAxios from "../../../plugins/myAxios.ts";
+import {getCurrentUser, updateCacheUser} from "../../../services/user.ts";
 
 const router = useRouter();
 const onClickLeft = () => {
@@ -47,26 +50,19 @@ const onClickLeft = () => {
 const route = useRoute();
 const editUser = ref({currentValue: route.query.currentValue});
 
-const text = ref('');
-
 let res;
 const onClickRight = async () => {
   // 获取当前用户
   const currentUser = await getCurrentUser();
   if (!currentUser) {
-    Toast.fail('用户未登录');
+    Toast.fail('用户未登录')
     return;
   }
 
-  const textValue = text.value;
-  if (textValue.length !== 11) {
-    Toast.fail('手机号格式错误');
-    return;
-  }
-
+  const gender = (editUser.value.currentValue === '男' || editUser.value.currentValue === '0') ? 0 : 1;
   res = await myAxios.post('/user/update', {
     'id': currentUser.id,
-    'phone': textValue === '' ? currentUser : textValue,
+    'gender': gender
   });
   if (res.data.code === 0 && res.data.data > 0) {
     await updateCacheUser();
@@ -77,6 +73,18 @@ const onClickRight = async () => {
 
   router.back();
 }
+
+//--------- 选择框 ---------
+
+const result = ref('');
+const showPicker = ref(false);
+const columns = ['男', '女'];
+
+const onConfirm = (value) => {
+  result.value = value;
+  editUser.value.currentValue = value;
+  showPicker.value = false;
+};
 </script>
 
 <style scoped>

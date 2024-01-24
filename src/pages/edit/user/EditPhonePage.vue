@@ -23,9 +23,9 @@
       <van-field
           v-model="text"
           name="username"
-          label="邮箱"
+          label="手机号"
           :placeholder="editUser.currentValue"
-          :rules="[{ required: 1, message: '请填写邮箱' }]"
+          :rules="[{ required: 1, message: '请填写手机号' }]"
       />
     </van-cell-group>
   </van-form>
@@ -36,8 +36,8 @@
 import {ref} from "vue";
 import {Toast} from "vant";
 import {useRoute, useRouter} from "vue-router";
-import {getCurrentUser, updateCacheUser} from "../../services/user";
-import myAxios from "../../plugins/myAxios";
+import {getCurrentUser, updateCacheUser} from "../../../services/user";
+import myAxios from "../../../plugins/myAxios";
 
 const router = useRouter();
 const onClickLeft = () => {
@@ -54,14 +54,19 @@ const onClickRight = async () => {
   // 获取当前用户
   const currentUser = await getCurrentUser();
   if (!currentUser) {
-    Toast.fail('用户未登录')
+    Toast.fail('用户未登录');
     return;
   }
 
   const textValue = text.value;
+  if (textValue.length !== 11) {
+    Toast.fail('手机号格式错误');
+    return;
+  }
+
   res = await myAxios.post('/user/update', {
     'id': currentUser.id,
-    'email': textValue === '' ? currentUser : textValue,
+    'phone': textValue === '' ? currentUser : textValue,
   });
   if (res.data.code === 0 && res.data.data > 0) {
     await updateCacheUser();

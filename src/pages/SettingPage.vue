@@ -4,7 +4,7 @@
         title="头像"
         is-link
         center
-        @click="toEdit('edit/avatar', user.avatarUrl)"
+        @click="toEdit('/edit/user/avatar', user.avatarUrl)"
     >
       <van-image
           round
@@ -19,7 +19,7 @@
         center
         is-link
         :value="user.username"
-        @click="toEdit('/edit/username', user.username)"
+        @click="toEdit('/edit/user/username', user.username)"
     />
 
     <van-cell
@@ -27,7 +27,7 @@
         is-link
         center
         :value="user.profile"
-        @click="toEdit('/edit/profile', user.profile)"
+        @click="toEdit('/edit/user/profile', user.profile)"
     />
 
     <van-cell
@@ -35,7 +35,7 @@
         is-link
         center
         :value="user.tags"
-        @click="toEdit('/edit/tag', JSON.stringify(user.tags))"
+        @click="toEdit('/edit/user/tag', JSON.stringify(user.tags))"
     >
       <van-tag
           type="success"
@@ -55,28 +55,28 @@
         title="性别"
         is-link
         :value="(user.gender===0) ? `男` : `女`"
-        @click="toEdit('/edit/gender', user.gender)"
+        @click="toEdit('/edit/user/gender', user.gender)"
     />
 
     <van-cell
         title="手机号"
         is-link
         :value="user.phone"
-        @click="toEdit('/edit/phone', user.phone)"
+        @click="toEdit('/edit/user/phone', user.phone)"
     />
 
     <van-cell
         title="邮箱"
         is-link
         :value="user.email"
-        @click="toEdit('/edit/email', user.email)"
+        @click="toEdit('/edit/user/email', user.email)"
     />
 
     <!-- todo -->
     <van-cell
         title="修改密码"
         is-link
-        @click="toEdit('/edit/pwd', '')"
+        @click="toEdit('/edit/user/pwd', '')"
     />
 
     <van-cell

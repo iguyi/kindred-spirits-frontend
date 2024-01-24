@@ -17,27 +17,32 @@
     </template>
   </van-nav-bar>
 
-  <!-- 修改文本类信息 -->
-  <van-form>
-    <van-cell-group inset>
-      <van-field
-          v-model="text"
-          name="username"
-          label="昵称"
-          :placeholder="editUser.currentValue"
-          :rules="[{ required: 1, message: '请填写昵称' }]"
-      />
-    </van-cell-group>
-  </van-form>
-
+  <div>
+    <van-cell
+        title="头像"
+        center
+    >
+      <van-uploader
+          :after-read="afterRead"
+          :max-size="100 * 1024"
+          @oversize="onOversize">
+        <van-image
+            round
+            width="48px"
+            height="48px"
+            :src="avatarUrl.url === null?editUser.currentValue:avatarUrl.url"
+        />
+      </van-uploader>
+    </van-cell>
+  </div>
 </template>
 
 <script setup>
+import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
 import {Toast} from "vant";
-import {useRoute, useRouter} from "vue-router";
-import {getCurrentUser, updateCacheUser} from "../../services/user";
-import myAxios from "../../plugins/myAxios";
+import myAxios from "../../../plugins/myAxios.ts";
+import {getCurrentUser, updateCacheUser} from "../../../services/user.ts";
 
 const router = useRouter();
 const onClickLeft = () => {
@@ -47,7 +52,9 @@ const onClickLeft = () => {
 const route = useRoute();
 const editUser = ref({currentValue: route.query.currentValue});
 
-const text = ref('');
+const avatarUrl = ref({url: null});
+// 头像的数据流
+const avatarData = ref({data: null});
 
 let res;
 const onClickRight = async () => {
@@ -58,11 +65,15 @@ const onClickRight = async () => {
     return;
   }
 
-  const textValue = text.value;
-  res = await myAxios.post('/user/update', {
-    'id': currentUser.id,
-    'username': textValue === '' ? currentUser : textValue,
+  res = await myAxios.post('/common/avatar/user', {
+    'id': Number(currentUser.id),
+    'avatar': avatarData.value.data.file,
+  }, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   });
+
   if (res.data.code === 0 && res.data.data > 0) {
     await updateCacheUser();
     Toast.success('修改成功');
@@ -72,6 +83,23 @@ const onClickRight = async () => {
 
   router.back();
 }
+
+//-------- 头像 --------
+
+/**
+ * 上传头像
+ */
+const afterRead = async (file) => {
+  avatarUrl.value.url = file.objectUrl;
+  avatarData.value.data = file;
+};
+
+/**
+ * 头像大小不能超过 100kb
+ */
+const onOversize = () => {
+  Toast('头像大小不能超过 100kb');
+};
 </script>
 
 <style scoped>

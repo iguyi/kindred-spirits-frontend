@@ -17,30 +17,27 @@
     </template>
   </van-nav-bar>
 
-  <van-field
-      v-model="result"
-      is-link
-      readonly
-      name="picker"
-      label="性别"
-      :placeholder="(editUser.currentValue === '0')?`男`:`女`"
-      @click="showPicker = true"
-  />
-  <van-popup v-model:show="showPicker" position="bottom">
-    <van-picker
-        :columns="columns"
-        @confirm="onConfirm"
-        @cancel="showPicker = false"
-    />
-  </van-popup>
+  <!-- 修改文本类信息 -->
+  <van-form>
+    <van-cell-group inset>
+      <van-field
+          v-model="text"
+          name="username"
+          label="邮箱"
+          :placeholder="editUser.currentValue"
+          :rules="[{ required: 1, message: '请填写邮箱' }]"
+      />
+    </van-cell-group>
+  </van-form>
+
 </template>
 
 <script setup>
-import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
 import {Toast} from "vant";
-import myAxios from "../../plugins/myAxios.ts";
-import {getCurrentUser, updateCacheUser} from "../../services/user.ts";
+import {useRoute, useRouter} from "vue-router";
+import {getCurrentUser, updateCacheUser} from "../../../services/user";
+import myAxios from "../../../plugins/myAxios";
 
 const router = useRouter();
 const onClickLeft = () => {
@@ -49,6 +46,8 @@ const onClickLeft = () => {
 
 const route = useRoute();
 const editUser = ref({currentValue: route.query.currentValue});
+
+const text = ref('');
 
 let res;
 const onClickRight = async () => {
@@ -59,10 +58,10 @@ const onClickRight = async () => {
     return;
   }
 
-  const gender = (editUser.value.currentValue === '男' || editUser.value.currentValue === '0') ? 0 : 1;
+  const textValue = text.value;
   res = await myAxios.post('/user/update', {
     'id': currentUser.id,
-    'gender': gender
+    'email': textValue === '' ? currentUser : textValue,
   });
   if (res.data.code === 0 && res.data.data > 0) {
     await updateCacheUser();
@@ -73,18 +72,6 @@ const onClickRight = async () => {
 
   router.back();
 }
-
-//--------- 选择框 ---------
-
-const result = ref('');
-const showPicker = ref(false);
-const columns = ['男', '女'];
-
-const onConfirm = (value) => {
-  result.value = value;
-  editUser.value.currentValue = value;
-  showPicker.value = false;
-};
 </script>
 
 <style scoped>

@@ -81,8 +81,8 @@
 import {useRoute, useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import {Toast} from "vant";
-import myAxios from "../../plugins/myAxios.ts";
-import {getCurrentUser, updateCacheUser} from "../../services/user.ts";
+import myAxios from "../../../plugins/myAxios.ts";
+import {getCurrentUser, updateCacheUser} from "../../../services/user.ts";
 
 const router = useRouter();
 const route = useRoute();

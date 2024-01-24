@@ -56,8 +56,8 @@
 <script setup lang="ts">
 import {Toast} from "vant";
 import {useRoute, useRouter} from "vue-router";
-import {clearCacheUser, getCurrentUser} from "../../services/user";
-import myAxios from "../../plugins/myAxios";
+import {clearCacheUser, getCurrentUser} from "../../../services/user";
+import myAxios from "../../../plugins/myAxios";
 import {ref} from "vue";
 
 const router = useRouter();
