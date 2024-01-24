@@ -17,7 +17,7 @@
     <van-cell
         title="昵称"
         center
-        is-link to="/user/edit/"
+        is-link
         :value="user.username"
         @click="toEdit('/edit/username', user.username)"
     />
