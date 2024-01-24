@@ -62,21 +62,7 @@
       @confirm="addFriend(showUserData.id)"
       @close="showDown"
   >
-    <van-cell title="昵称" :value="showUserData.username"/>
-    <van-cell title="账号" :value="showUserData.userAccount"/>
-    <van-cell title="性别" :value="showUserData.gender===0?'男':'女'"/>
-    <van-cell title="标签">
-      <template #label>
-        <van-tag
-            type="success"
-            v-for="tag in showUserData.tags"
-            style="margin-right: 3px"
-        >
-          {{ tag }}
-        </van-tag>
-      </template>
-    </van-cell>
-    <van-cell title="个人简介" :label="showUserData.profile"/>
+    <ShowUser :user="showUserData"/>
   </van-dialog>
 </template>
 
@@ -85,6 +71,7 @@ import {UserType} from "../models/user";
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
 import {ref} from "vue";
+import ShowUser from "./ShowUser.vue";
 
 /**
  * 添加好友
