@@ -39,9 +39,12 @@
       <template #title>
         <div style="font-size: 15px">
           所属队伍
-          <van-tag v-if="teamDetail.status === 0" round size="mini" type="success" style="margin-left: 5px">公开</van-tag>
-          <van-tag v-if="teamDetail.status === 1" round size="mini" type="danger" style="margin-left: 5px">私有</van-tag>
-          <van-tag v-if="teamDetail.status === 2" round size="mini" type="warning" style="margin-left: 5px">加密</van-tag>
+          <van-tag v-if="teamDetail.status === 0" round size="mini" type="success" style="margin-left: 5px">公开
+          </van-tag>
+          <van-tag v-if="teamDetail.status === 1" round size="mini" type="danger" style="margin-left: 5px">私有
+          </van-tag>
+          <van-tag v-if="teamDetail.status === 2" round size="mini" type="warning" style="margin-left: 5px">加密
+          </van-tag>
         </div>
       </template>
       <template #value>
@@ -82,7 +85,10 @@
     </van-cell>
 
     <!-- 入队截至时间   -->
-    <van-cell>
+    <van-cell
+        @click="toEdit('/edit/team/expire', teamDetail.expireTime)"
+        is-link
+    >
       <template #title>
         <div style="font-size: 15px">入队截至时间</div>
       </template>
