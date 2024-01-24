@@ -19,6 +19,7 @@ import EditAvatarPage from '../pages/edit/user/EditAvatarPage.vue'
 import EditPwdPage from '../pages/edit/user/EditPwdPage.vue'
 import PrivateChatRoomPage from '../pages/room/PrivateChatRoomPage.vue'
 import TeamChatRoomPage from '../pages/room/TeamChatRoomPage.vue'
+import EditTeamAvatar from '../pages/edit/team/EditAvatarPage.vue'
 
 const routes = [
     {path: '/', component: HomePage, meta: {navBar: true, vanTabbar: true, title: '聊天'}},
@@ -45,6 +46,7 @@ const routes = [
     {path: '/edit/user/pwd', component: EditPwdPage, meta: {navBar: false, vanTabbar: false, title: '编辑-密码'}},
     {path: '/chat/private', component: PrivateChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '好友聊天'}},
     {path: '/chat/team', component: TeamChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '队伍聊天'}},
+    {path: '/edit/team/avatar', component: EditTeamAvatar, meta: {navBar: false, vanTabbar: false, title: '编辑-头像'}},
 ]
 
 export default routes;
