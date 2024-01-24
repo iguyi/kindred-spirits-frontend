@@ -21,6 +21,7 @@ import PrivateChatRoomPage from '../pages/room/PrivateChatRoomPage.vue'
 import TeamChatRoomPage from '../pages/room/TeamChatRoomPage.vue'
 import EditTeamAvatarPage from '../pages/edit/team/EditAvatarPage.vue'
 import EditTeamBasePage from '../pages/edit/team/EditTeamBasePage.vue'
+import EditTeamDescriptionPage from '../pages/edit/team/EditTeamDescriptionPage.vue'
 
 const routes = [
     {path: '/', component: HomePage, meta: {navBar: true, vanTabbar: true, title: '聊天'}},
@@ -49,6 +50,7 @@ const routes = [
     {path: '/chat/team', component: TeamChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '队伍聊天'}},
     {path: '/edit/team/avatar', component: EditTeamAvatarPage, meta: {navBar: false, vanTabbar: false, title: '编辑-头像'}},
     {path: '/edit/team/base', component: EditTeamBasePage, meta: {navBar: false, vanTabbar: false, title: '编辑-基本信息'}},
+    {path: '/edit/team/description', component: EditTeamDescriptionPage, meta: {navBar: false, vanTabbar: false, title: '编辑-队伍描述'}},
 ]
 
 export default routes;
