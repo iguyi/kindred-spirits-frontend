@@ -72,7 +72,6 @@
         @click="toEdit('/edit/user/email', user.email)"
     />
 
-    <!-- todo -->
     <van-cell
         title="修改密码"
         is-link
