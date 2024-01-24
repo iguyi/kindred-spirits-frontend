@@ -52,7 +52,10 @@
     </van-cell>
 
     <!-- 队伍介绍   -->
-    <van-cell is-link>
+    <van-cell
+        @click="toEdit('/edit/team/description', teamDetail.description)"
+        is-link
+    >
       <template #title>
         <div style="font-size: 15px">队伍介绍</div>
       </template>
