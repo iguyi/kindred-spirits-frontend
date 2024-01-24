@@ -31,7 +31,11 @@
     </van-cell>
 
     <!--  队伍名称 -->
-    <van-cell center is-link>
+    <van-cell
+        @click='toEdit("/edit/team/base", `{"name": "${teamDetail.name}", "status": "${teamDetail.status}"}`)'
+        center
+        is-link
+    >
       <template #title>
         <div style="font-size: 15px">队伍名称</div>
       </template>
