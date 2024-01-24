@@ -72,7 +72,7 @@ import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
 import {Toast} from "vant";
 import myAxios from "../../../plugins/myAxios";
-import {getCurrentUser, updateCacheUser} from "../../../services/user";
+import {getCurrentUser} from "../../../services/user";
 
 const router = useRouter();
 const route = useRoute();
@@ -123,7 +123,6 @@ const onClickRight = async () => {
     'password': updateTeamData.value.password
   });
   if (res.data.code === 0 && res.data.data > 0) {
-    await updateCacheUser();
     Toast.success('修改成功');
   } else {
     Toast.fail('修改失败');
