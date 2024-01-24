@@ -14,7 +14,11 @@
 
   <template v-if="teamDetail !== {}">
     <!-- 队伍头像   -->
-    <van-cell is-link center>
+    <van-cell
+        @click="toEdit('/edit/team/avatar', teamDetail.avatarUrl)"
+        is-link
+        center
+    >
       <template #title>
         <div style="font-size: 15px">头像</div>
       </template>
@@ -376,6 +380,25 @@ const addFriend = async (targetUserId: number) => {
  */
 const showDown = () => {
   showUserData.value = {};
+}
+
+/**
+ * 跳转至队伍信息编辑页面
+ *
+ * @param path - 跳转的页面
+ * @param currentValue - 当前信息
+ */
+const toEdit = (path, currentValue) => {
+  if (currentUser.value.id !== teamDetail.value.leaderId) {
+    Toast.fail("无修改权限");
+    return;
+  }
+
+  let teamId = teamDetail.value.id;
+  router.push({
+    path: path,
+    query: {teamId, currentValue}
+  });
 }
 
 </script>
