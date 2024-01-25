@@ -52,7 +52,7 @@ const routes = [
     {path: '/edit/team/avatar', component: EditTeamAvatarPage, meta: {navBar: false, vanTabbar: false, title: '编辑-头像'}},
     {path: '/edit/team/base', component: EditTeamBasePage, meta: {navBar: false, vanTabbar: false, title: '编辑-基本信息'}},
     {path: '/edit/team/description', component: EditTeamDescriptionPage, meta: {navBar: false, vanTabbar: false, title: '编辑-队伍描述'}},
-    {path: '/edit/team/expire', component: EditTeamExpirePage, meta: {navBar: false, vanTabbar: false, title: '编辑-队伍描述'}},
+    {path: '/edit/team/expire', component: EditTeamExpirePage, meta: {navBar: false, vanTabbar: false, title: '编辑-过期时间'}},
 ]
 
 export default routes;
