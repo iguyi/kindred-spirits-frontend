@@ -63,27 +63,37 @@
           type="warning"
           style="margin-left: 10px"
           size="mini"
+          @click="updateRelation(2)"
       >
         拉黑
       </van-button>
       <van-button
-          v-show="showFriendData.relationStatus !== 1 || showFriendData.relationStatus !== 2"
+          v-show="((showFriendData.isActive === true && showFriendData.relationStatus !== 1)
+            || (showFriendData.isActive === false && showFriendData.relationStatus !== 2))
+            && showFriendData.relationStatus !== 3
+            && showFriendData.relationStatus !== 4
+            && showFriendData.relationStatus !== 5"
           type="danger"
           size="mini"
           style="margin-left: 10px"
+          @click="updateRelation(1)"
       >
         删除
       </van-button>
+      <!-- todo 添加 -->
       <van-button
-          v-show="showFriendData.relationStatus === 1 || showFriendData.relationStatus === 2"
+          v-show="showFriendData.relationStatus !== 0
+            && showFriendData.relationStatus !== 3
+            && showFriendData.relationStatus !== 4
+            && showFriendData.relationStatus !== 5"
           type="success"
           size="mini"
           style="margin-left: 10px"
       >
         添加
       </van-button>
-    </div><br>
-
+    </div>
+    <br>
   </van-popup>
 </template>
 
@@ -337,6 +347,25 @@ const onClickRight = async () => {
     }
   }
   show.value = true;
+}
+
+/**
+ * 拉黑或删除对方
+ * @param operation - 1 表示删除; 2-表示拉黑
+ */
+const updateRelation = async (operation: number) => {
+  const result = await myAxios.post("/friend/update/relation", {
+    friendId: stats.value.chatUser.id,
+    operation: operation,
+    isActive: showFriendData.value.isActive
+  });
+  if (result && result.data.code === 0 && result.data.data === true) {
+    Toast.success('操作成功');
+    showFriendData.value = null;
+    return;
+  }
+  console.log(result ? result.data.description : 'result is null');
+  Toast.fail('系统繁忙');
 }
 
 /**
