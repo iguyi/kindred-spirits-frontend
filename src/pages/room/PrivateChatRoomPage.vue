@@ -31,6 +31,60 @@
       </van-field>
     </van-cell-group>
   </div>
+
+  <van-popup v-if="showFriendData" v-model:show="show" style="width: 350px">
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 0px' }">
+      对方信息
+    </van-divider>
+    <van-cell title="头像" center>
+      <van-image
+          round
+          width="48px"
+          height="48px"
+          :src="showFriendData.friend.avatarUrl"
+      />
+    </van-cell>
+    <van-cell title="昵称" center :value="showFriendData.friend.username"/>
+    <van-cell title="个人简介" :value="showFriendData.friend.profile" center/>
+    <van-cell title="Ta 的标签" center :value="showFriendData.friend.tags">
+      <van-tag type="success" v-for="tag in showFriendData.friend.tags" style="margin-right: 3px">
+        {{ tag }}
+      </van-tag>
+    </van-cell>
+    <van-cell title="账号" :value="showFriendData.friend.userAccount"/>
+    <van-cell title="性别" :value="(showFriendData.friend.gender===0) ? `男` : `女`"/>
+    <van-cell title="手机号" :value="showFriendData.friend.phone"/>
+    <van-cell title="邮箱" :value="showFriendData.friend.email"/>
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 0px' }"/>
+    <div style="text-align: center">
+      <van-button type="primary" size="mini" @click="returnPage">返回</van-button>
+      <van-button
+          v-show="showFriendData.relationStatus !== 3"
+          type="warning"
+          style="margin-left: 10px"
+          size="mini"
+      >
+        拉黑
+      </van-button>
+      <van-button
+          v-show="showFriendData.relationStatus !== 1 || showFriendData.relationStatus !== 2"
+          type="danger"
+          size="mini"
+          style="margin-left: 10px"
+      >
+        删除
+      </van-button>
+      <van-button
+          v-show="showFriendData.relationStatus === 1 || showFriendData.relationStatus === 2"
+          type="success"
+          size="mini"
+          style="margin-left: 10px"
+      >
+        添加
+      </van-button>
+    </div><br>
+
+  </van-popup>
 </template>
 
 <script setup lang="ts">
@@ -43,6 +97,10 @@ import {webSocketCache} from "../../states/chat";
 
 const router = useRouter();
 const route = useRoute();
+
+// 展示好友信息
+const show = ref(false);
+const showFriendData = ref(null);
 
 const stats = ref({
   // 当前登录用户
@@ -260,11 +318,25 @@ const onClickLeft = () => {
 }
 
 /**
- * todo 查看好友信息
+ * 查看好友信息
  */
-const onClickRight = () => {
-  // Toast.fail('TODO 查询好友信息');
-  Toast.fail(JSON.stringify(stats.value.user));
+const onClickRight = async () => {
+  if (!showFriendData.value) {
+    let res = await myAxios.get('/friend/show', {
+          params: {
+            friendId: stats.value.chatUser.id
+          }
+        }
+    );
+
+    if (res && res.data.code === 0 && res.data.data) {
+      res.data.data.friend.tags = JSON.parse(res.data.data.friend.tags);
+      showFriendData.value = res.data.data;
+    } else {
+      Toast.fail(res.data.description);
+    }
+  }
+  show.value = true;
 }
 
 /**
@@ -304,6 +376,11 @@ const createContent = (friendUser, currentUser, text) => {
   // 汇总 html 拼接结果
   stats.value.content += html;
 }
+
+const returnPage = () => {
+  show.value = false;
+}
+
 </script>
 
 <style scoped>
