@@ -40,7 +40,8 @@ onMounted(async () => {
 
   // 获取未读消息数
   const messageListData = await myAxios.get("/message/undressed", {});
-  undressedNum.value = messageListData.data.data;
+  let num = messageListData.data.data;
+  undressedNum.value = num >= 99 ? '99+' : num;
 });
 
 </script>
