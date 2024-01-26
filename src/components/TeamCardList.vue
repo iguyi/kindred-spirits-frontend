@@ -51,15 +51,6 @@ import {Toast} from "vant";
 
 const router = useRouter();
 
-interface TeamCardListProps {
-  teamList: TeamType[];
-}
-
-const props = withDefaults(defineProps<TeamCardListProps>(), {
-  // @ts-ignore
-  teamList: [] as TeamType[],
-});
-
 const joinTeam = async (teamId: number) => {
   const res = await myAxios.post('/team/join', {
     'teamId': Number(teamId)
@@ -70,17 +61,20 @@ const joinTeam = async (teamId: number) => {
   });
 
   if (res.data.code === 0 && res.data.data) {
-    Toast.success('等待队长同意');
+    Toast.success('操作成功');
   } else {
     Toast.fail(res.data.description);
   }
-  /*router.push({
-    path: '/team/join',
-    query: {
-      id: id
-    }
-  });*/
 }
+
+interface TeamCardListProps {
+  teamList: TeamType[];
+}
+
+const props = withDefaults(defineProps<TeamCardListProps>(), {
+  // @ts-ignore
+  teamList: [] as TeamType[],
+});
 </script>
 
 <style scoped>
