@@ -7,7 +7,13 @@
     <template #right-icon></template>
 
     <!--  添加好友  -->
-    <template #extra class="sendTime"> {{ chatRoom.sendTime }}</template>
+    <template #extra class="sendTime">
+      <div>
+        {{ chatRoom.sendTime }}
+        <br>
+        <van-icon badge="9" style="margin-left: 30px"/>
+      </div>
+    </template>
 
     <template #default>
       <div class="custom-cell">
