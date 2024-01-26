@@ -50,7 +50,7 @@ const routes = [
     {path: '/edit/user/pwd', component: EditPwdPage, meta: {navBar: false, vanTabbar: false, title: '编辑-密码'}},
     {path: '/chat/private', component: PrivateChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '好友聊天'}},
     {path: '/chat/team', component: TeamChatRoomPage, meta: {navBar: false, vanTabbar: false, title: '队伍聊天'}},
-    {path: '/message/undressed', component: MessagePage, meta: {navBar: false, vanTabbar: false, title: '消息通知'}},
+    {path: '/room/message', component: MessagePage, meta: {navBar: false, vanTabbar: false, title: '消息通知'}},
     {path: '/edit/team/avatar', component: EditTeamAvatarPage, meta: {navBar: false, vanTabbar: false, title: '编辑-头像'}},
     {path: '/edit/team/base', component: EditTeamBasePage, meta: {navBar: false, vanTabbar: false, title: '编辑-基本信息'}},
     {path: '/edit/team/description', component: EditTeamDescriptionPage, meta: {navBar: false, vanTabbar: false, title: '编辑-队伍描述'}},
