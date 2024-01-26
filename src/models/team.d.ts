@@ -5,6 +5,7 @@ import {UserType} from "./user";
  */
 export type TeamType = {
     id: number;
+    avatarUrl: string,
     name: string;
     description: string;
     maxNum: number;
