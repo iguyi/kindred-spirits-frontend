@@ -50,6 +50,8 @@ onMounted(async () => {
   if (messageListData && messageListData.data.code === 0) {
     messageList.value = messageListData.data.data;
   }
+  // 刷新系统消息的状态
+  await myAxios.get("/message/refresh", {});
 });
 
 /**
