@@ -1,3 +1,4 @@
+<!-- todo 统计未读消息数 -->
 <template>
   <van-cell
       @click="click(chatRoom.receiverId, chatRoom.receiverName, chatRoom.avatarUrl, chatRoom.chatType)"
@@ -11,7 +12,7 @@
       <div>
         {{ chatRoom.sendTime }}
         <br>
-        <van-icon badge="9" style="margin-left: 30px"/>
+        <van-icon badge="99+" style="margin-left: 30px"/>
       </div>
     </template>
 
