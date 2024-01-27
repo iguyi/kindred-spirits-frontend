@@ -56,6 +56,46 @@
         placeholder="请输入邀请码"
     />
   </van-dialog>
+
+  <van-dialog
+      @confirm="joinSecret"
+      @cancel="clearJoinTeamParams"
+      v-model:show="secretTeamShow"
+      title="入队验证"
+      show-cancel-button>
+
+    <van-radio-group v-model="checked">
+      <van-cell title="使用密码加入队伍" icon="shield-o" clickable @click=" checked = '1'">
+        <template #right-icon>
+          <van-radio name="1"/>
+        </template>
+      </van-cell>
+      <van-cell title="使用邀请码加入队伍" icon="link-o" clickable @click=" checked = '2'">
+        <template #right-icon>
+          <van-radio name="2"/>
+        </template>
+      </van-cell>
+    </van-radio-group>
+
+    <van-field
+        v-if="checked === '1'"
+        v-model="joinTeamParams.password"
+        type="password"
+        clearable
+        label="密码"
+        left-icon="shield-o"
+        placeholder="请输入密码"
+    />
+    <van-field
+        v-if="checked === '2'"
+        v-model="joinTeamParams.teamLink"
+        clearable
+        label="邀请码"
+        left-icon="link-o"
+        placeholder="请输入邀请码"
+    />
+  </van-dialog>
+
 </template>
 
 <script setup lang="ts">
@@ -69,6 +109,10 @@ const router = useRouter();
 
 // 用于展示在加入私有队伍的申请表单
 const privateTeamShow = ref(false);
+
+// 用于展示在加入加密队伍的申请表单
+const secretTeamShow = ref(false);
+const checked = ref('1');
 
 const joinTeamParams = ref({
   teamId: 0,
@@ -92,17 +136,18 @@ const joinTeam = async (teamId: number, status: number) => {
 
   if (status == 2) {
     // 加密队伍
+    secretTeamShow.value = true;
     return;
   }
 
   // 加入公开队伍
-  await join();
+  await myJoin();
 }
 
 /**
  * 加入公开队伍、加密队伍
  */
-const join = async () => {
+const myJoin = async () => {
   const res = await myAxios.post('/team/join', {
     'teamId': joinTeamParams.value.teamId,
     'password': joinTeamParams.value.password,
@@ -116,6 +161,21 @@ const join = async () => {
   }
 
   clearJoinTeamParams();
+}
+
+/**
+ * 加入加密队伍
+ */
+const joinSecret = async () => {
+  let joinModel = checked.value;
+
+  if (joinModel === '1') {
+    await myJoin();
+  } else {
+    await joinPrivate();
+  }
+
+  checked.value = '1';
 }
 
 /**
