@@ -10,7 +10,7 @@
       <van-button
           type="primary"
           size="mini"
-          @click="joinTeam(team.id)"
+          @click="joinTeam(team.id, team.status)"
       >
         加入
       </van-button>
@@ -41,6 +41,21 @@
       </div>
     </template>
   </van-cell>
+
+  <van-dialog
+      @confirm="joinPrivate"
+      @cancel="clearJoinTeamParams"
+      v-model:show="privateTeamShow"
+      title="入队验证"
+      show-cancel-button>
+    <van-field
+        v-model="joinTeamParams.teamLink"
+        clearable
+        label="邀请码"
+        left-icon="link-o"
+        placeholder="请输入邀请码"
+    />
+  </van-dialog>
 </template>
 
 <script setup lang="ts">
@@ -48,16 +63,50 @@ import {TeamType} from "../models/team";
 import {useRouter} from "vue-router";
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
+import {ref} from "vue";
 
 const router = useRouter();
 
-const joinTeam = async (teamId: number) => {
+// 用于展示在加入私有队伍的申请表单
+const privateTeamShow = ref(false);
+
+const joinTeamParams = ref({
+  teamId: 0,
+  password: '',
+  teamLink: ''
+});
+
+/**
+ * 加入队伍, 根据目标队伍类型, 选择加入时的操作
+ * @param teamId - 目标队伍 id
+ * @param status - 目标队伍类型
+ */
+const joinTeam = async (teamId: number, status: number) => {
+  joinTeamParams.value.teamId = teamId
+
+  if (status == 1) {
+    // 私有队伍
+    privateTeamShow.value = true;
+    return;
+  }
+
+  if (status == 2) {
+    // 加密队伍
+    return;
+  }
+
+  // 加入公开队伍
+  await join();
+}
+
+/**
+ * 加入公开队伍、加密队伍
+ */
+const join = async () => {
   const res = await myAxios.post('/team/join', {
-    'teamId': Number(teamId)
-  }, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    'teamId': joinTeamParams.value.teamId,
+    'password': joinTeamParams.value.password,
+    'teamLink': joinTeamParams.value.teamLink
   });
 
   if (res.data.code === 0 && res.data.data) {
@@ -65,6 +114,35 @@ const joinTeam = async (teamId: number) => {
   } else {
     Toast.fail(res.data.description);
   }
+
+  clearJoinTeamParams();
+}
+
+/**
+ * 加入私有队伍 / 更加邀请码加入队伍
+ */
+const joinPrivate = async () => {
+  const res = await myAxios.post('/team/join/link', {
+    'teamId': joinTeamParams.value.teamId,
+    'teamLink': joinTeamParams.value.teamLink
+  });
+
+  if (res.data.code === 0 && res.data.data) {
+    Toast.success('操作成功');
+  } else {
+    Toast.fail(res.data.description);
+  }
+
+  clearJoinTeamParams();
+}
+
+/**
+ * 清空 joinTeamParams
+ */
+const clearJoinTeamParams = () => {
+  joinTeamParams.value.teamId = 0;
+  joinTeamParams.value.password = '';
+  joinTeamParams.value.teamLink = '';
 }
 
 interface TeamCardListProps {
