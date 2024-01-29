@@ -89,6 +89,7 @@
           type="success"
           size="mini"
           style="margin-left: 10px"
+          @click="addFriend()"
       >
         添加
       </van-button>
@@ -151,7 +152,6 @@ let heartbeatTimer = null;
  * 存储 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
  */
 const chatRoom = ref(null);
-
 
 onMounted(async () => {
   // 获取好友信息并记录
@@ -408,6 +408,22 @@ const createContent = (friendUser, currentUser, text) => {
 
 const returnPage = () => {
   show.value = false;
+}
+
+/**
+ * 添加好友
+ */
+const addFriend = async () => {
+  const resultData = await myAxios.post("/friend/apply", {
+    receiverId: stats.value.chatUser.id,
+    messageType: 1
+  });
+
+  if (resultData.data.code === 0) {
+    Toast.success("等待对方同意");
+  } else {
+    Toast.fail(resultData.data.description);
+  }
 }
 
 </script>
