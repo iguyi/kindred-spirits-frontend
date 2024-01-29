@@ -12,7 +12,7 @@
     </template>
   </van-nav-bar>
 
-  <template v-if="teamDetail !== {}">
+  <template v-if="teamDetail.id !== -1">
     <!-- 队伍头像   -->
     <van-cell
         @click="toEdit('/edit/team/avatar', teamDetail.avatarUrl)"
@@ -203,6 +203,8 @@
   >
     <ShowUser :user="showUserData"/>
   </van-dialog>
+
+  <van-empty v-if="teamDetail.id === -1" description="不在当前队伍" />
 </template>
 
 <script setup lang="ts">
