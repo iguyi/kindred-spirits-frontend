@@ -80,7 +80,6 @@
       >
         删除
       </van-button>
-      <!-- todo 添加 -->
       <van-button
           v-show="showFriendData.relationStatus !== 0
             && showFriendData.relationStatus !== 3
