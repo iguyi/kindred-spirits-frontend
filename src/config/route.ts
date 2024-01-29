@@ -7,7 +7,6 @@ import SearchPage from '../pages/search/SearchPage.vue';
 import SearchResultPage from '../pages/search/SearchResultPage.vue';
 import UserLoginPage from '../pages/user/UserLoginPage.vue';
 import CreatePage from '../pages/team/CreatePage.vue'
-import JoinPage from '../pages/team/JoinPage.vue'
 import TeamHomePage from '../pages/team/TeamHomePage.vue'
 import EditUsernamePage from '../pages/edit/user/EditUsernamePage.vue'
 import EditProfilePage from '../pages/edit/user/EditProfilePage.vue'
@@ -38,7 +37,6 @@ const routes = [
     },
     {path: '/user/login', component: UserLoginPage, meta: {navBar: false, vanTabbar: false, title: '登录'}},
     {path: '/team/create', component: CreatePage, meta: {navBar: true, vanTabbar: false, title: '创建队伍'}},
-    {path: '/team/join', component: JoinPage, meta: {navBar: false, vanTabbar: false, title: '加入队伍'}},
     {path: '/team/home', component: TeamHomePage, meta: {navBar: false, vanTabbar: false, title: '队伍主页'}},
     {path: '/edit/user/username', component: EditUsernamePage, meta: {navBar: false, vanTabbar: false, title: '编辑-昵称'}},
     {path: '/edit/user/profile', component: EditProfilePage, meta: {navBar: false, vanTabbar: false, title: '编辑-简介'}},
