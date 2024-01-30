@@ -23,7 +23,7 @@
   </div>
 
   <!-- 底部 -->
-  <van-tabbar v-if="$route.meta.vanTabbar" route @change="onChange" active-color="#ee0a24" inactive-color="#000">
+  <van-tabbar v-if="$route.meta.vanTabbar" route active-color="#ee0a24" inactive-color="#000">
     <van-tabbar-item to="/" icon="chat-o" name="home"></van-tabbar-item>
     <van-tabbar-item to="/contacts" icon="friends-o" name="contacts"></van-tabbar-item>
     <van-tabbar-item to="/add" icon="like-o" name="add"></van-tabbar-item>
@@ -32,9 +32,7 @@
 </template>
 
 <script setup>
-import {Toast} from "vant";
 import {useRouter} from "vue-router";
-import {ref} from "vue";
 
 const router = useRouter();
 
@@ -46,9 +44,6 @@ const onClickLeft = () => {
 const onClickRight = () => {
   router.push('/search');
 };
-
-// todo 测试用，待删除
-const onChange = (index) => Toast(`${index}`);
 </script>
 
 <style scoped>
