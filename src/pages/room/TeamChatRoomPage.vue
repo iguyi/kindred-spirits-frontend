@@ -256,7 +256,7 @@ const onClickLeft = () => {
 }
 
 /**
- * todo 查看队伍信息
+ * 查看队伍信息
  */
 const onClickRight = () => {
   router.push({
