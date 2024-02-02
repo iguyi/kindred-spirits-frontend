@@ -26,6 +26,10 @@
 import HistoryRoomCardList from "../components/HistoryRoomCardList.vue";
 import {onMounted, ref} from "vue";
 import myAxios from "../plugins/myAxios";
+import {useRoute, useRouter} from "vue-router";
+
+const router = useRouter();
+const route = useRoute();
 
 // 历史会话列表
 const historyChatRoomList = ref([]);
@@ -34,6 +38,19 @@ const historyChatRoomList = ref([]);
 const undressedNum = ref(0);
 
 onMounted(async () => {
+  let params = route.query;
+  if (params !== {}) {
+    if (params.isLogin) {
+      await router.push({
+        path: '/user/login',
+        query: {
+          redirect: params.redirect
+        }
+      });
+      return;
+    }
+  }
+
   // 获取历史会话
   const historyChatRoomListData = await myAxios.get("/chat/room/list", {});
   historyChatRoomList.value = historyChatRoomListData.data.data;
