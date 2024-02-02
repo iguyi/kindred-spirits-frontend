@@ -27,6 +27,7 @@ import HistoryRoomCardList from "../components/HistoryRoomCardList.vue";
 import {onMounted, ref} from "vue";
 import myAxios from "../plugins/myAxios";
 import {useRoute, useRouter} from "vue-router";
+import {getCurrentUser} from "../services/user";
 
 const router = useRouter();
 const route = useRoute();
@@ -40,7 +41,8 @@ const undressedNum = ref(0);
 onMounted(async () => {
   let params = route.query;
   if (params !== {}) {
-    if (params.isLogin) {
+    let currentUser = getCurrentUser();
+    if (params.isLogin && !currentUser) {
       await router.push({
         path: '/user/login',
         query: {
