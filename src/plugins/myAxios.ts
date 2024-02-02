@@ -1,6 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 
 const myAxios: AxiosInstance = axios.create({
+    // todo 项目打包上线时, 这里需要改为线上环境地址
     baseURL: 'http://localhost:8080/kindredspirits'
 });
 
@@ -24,7 +25,7 @@ myAxios.interceptors.response.use(function (response) {
     // 未登录
     if (response?.data?.code === 40100) {
         const redirectUrl = window.location.href;
-        window.location.href = `/user/login?redirect=${redirectUrl}`;
+        window.location.href = `/?redirect=${redirectUrl}&isLogin=1`;
     }
 
     // return response.data;  // SearchResultPage 会出问题
