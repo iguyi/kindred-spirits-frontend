@@ -88,9 +88,9 @@ const onLoginSubmit = async () => {
   });
   console.log('用户登录\n', res);
   if (res.data.code === 0 && res.data.data) {
-    // 跳转到之前的页面
-    window.location.href = route.query?.redirect as string ?? '/';
-    // await router.replace(redirectUrl);
+    // 跳转到之前的页面(暂时放弃)
+    // window.location.href = route.query?.redirect as string ?? '/';
+    await router.replace('/');
   } else {
     Toast.fail('登录失败');
   }
@@ -108,7 +108,8 @@ const onRegisterSubmit = async () => {
   alert(JSON.stringify(res));
   if (res.data.code === 0 && res.data.data) {
     // 跳转到之前的页面
-    window.location.href = '/setting';
+    await router.replace('/setting');
+    // window.location.href = '/setting';
   } else {
     Toast.fail('注册失败');
   }
