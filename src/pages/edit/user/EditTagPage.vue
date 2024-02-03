@@ -109,9 +109,10 @@ const tagGroup = ref({});
 
 onMounted(async () => {
   // 处理用户已选标签
-  let currentValue = JSON.parse(route.query.currentValue);
-  editUser.value = ref({currentValue: currentValue});
-  currentValue.forEach(tagName => {
+  let currentValue = route.query.currentValue;
+  let tagNameList = JSON.parse(currentValue === 'null' ? '[]' : currentValue);
+  editUser.value = ref({currentValue: tagNameList});
+  tagNameList.forEach(tagName => {
     activeIds.value.push(tagName);
   });
 
