@@ -24,7 +24,7 @@
     >
       <van-uploader
           :after-read="afterRead"
-          :max-size="100 * 1024"
+          :max-size="500 * 1024"
           @oversize="onOversize">
         <van-image
             round
@@ -98,7 +98,7 @@ const afterRead = async (file) => {
  * 头像大小不能超过 100kb
  */
 const onOversize = () => {
-  Toast('头像大小不能超过 100kb');
+  Toast('头像大小不能超过 500kb');
 };
 </script>
 
