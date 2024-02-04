@@ -105,7 +105,6 @@ const onRegisterSubmit = async () => {
     checkPassword: checkPassword.value
   });
   console.log('用户注册\n', res);
-  alert(JSON.stringify(res));
   if (res.data.code === 0 && res.data.data) {
     // 跳转到之前的页面
     await router.replace('/setting');
