@@ -212,11 +212,13 @@ const init = () => {
   }
 
   // 根据 socketUrl 开启一个新的 WebSocket 服务
-  if (webSocketCache.privateChat != null) {
+  if (webSocketCache.privateChat != null && webSocketCache.privateChat.readyState === 1) {
     socket = webSocketCache.privateChat;
     return;
   }
+  // todo 上线
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/0`;
+  //let socketUrl = `ws://121.40.141.242:8080/kindredspirits/websocket/${uid}/0`;
   socket = new WebSocket(socketUrl);
   webSocketCache.privateChat = socket;
 
@@ -234,6 +236,11 @@ const init = () => {
 
     // 对收到的json数据进行解析
     let data = JSON.parse(msg.data);
+
+    if (data.hasOwnProperty("error")) {
+      Toast.fail(data.error);
+      return;
+    }
 
     // 保存消息到聊天室数据中
     stats.value.messages.push(data);
@@ -409,6 +416,8 @@ const createContent = (friendUser, currentUser, text) => {
     `
   } else {
     console.log("数据错误");
+    Toast.fail('消息发送失败');
+    return;
   }
 
   // 汇总 html 拼接结果
