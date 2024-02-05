@@ -218,7 +218,7 @@ const init = () => {
   }
   // todo 上线
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/0`;
-  //let socketUrl = `ws://121.40.141.242:8080/kindredspirits/websocket/${uid}/0`;
+
   socket = new WebSocket(socketUrl);
   webSocketCache.privateChat = socket;
 
