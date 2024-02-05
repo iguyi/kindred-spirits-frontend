@@ -126,7 +126,9 @@ onMounted(async () => {
   const lastElement = chatRoom.value.lastElementChild;
 
   // 将元素滚动到浏览器窗口的可见区域。
-  lastElement.scrollIntoView();
+  if (lastElement !== null) {
+    lastElement.scrollIntoView();
+  }
 
 });
 
@@ -149,7 +151,9 @@ const init = () => {
     return;
   }
 
+  // todo 上线
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/${stats.value.team.teamId}`;
+
   socket = new WebSocket(socketUrl);
   webSocketCache.teamChatMap[socketKey] = socket;
 
@@ -178,7 +182,9 @@ const init = () => {
     nextTick(() => {
       // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
       const lastElement = chatRoom.value.lastElementChild;
-      lastElement.scrollIntoView();
+      if (lastElement !== null) {
+        lastElement.scrollIntoView();
+      }
     });
   };
 
