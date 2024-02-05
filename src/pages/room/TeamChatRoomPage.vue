@@ -142,7 +142,7 @@ const init = () => {
 
   // 根据 socketUrl 开启一个新的 WebSocket 服务
   let socketKey = `${uid}-${stats.value.team.teamId}`
-  if (webSocketCache.teamChatMap.hasOwnProperty(socketKey)) {
+  if (webSocketCache.teamChatMap.hasOwnProperty(socketKey) && webSocketCache.teamChatMap[socketKey].readyState === 1) {
     socket = webSocketCache.teamChatMap[socketKey];
     return;
   }
