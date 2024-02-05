@@ -123,13 +123,9 @@ onMounted(async () => {
   await nextTick();
 
   // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
-  const lastElement = chatRoom.value.lastElementChild;
-
-  // 将元素滚动到浏览器窗口的可见区域。
-  if (lastElement !== null) {
-    lastElement.scrollIntoView();
-  }
-
+  let value = chatRoom.value;
+  const lastElement = value.lastElementChild;
+  lastElement.scrollIntoView();
 });
 
 /**
@@ -180,11 +176,13 @@ const init = () => {
 
     // 重载数据
     nextTick(() => {
-      // 获取 <div class="content" ref="chatRoom" v-html="stats.content"></div> 内的最后一个子元素
-      const lastElement = chatRoom.value.lastElementChild;
-      if (lastElement !== null) {
-        lastElement.scrollIntoView();
+      let value = chatRoom.value;
+      if (value === null) {
+        location.reload();
+        return;
       }
+      const lastElement = value.lastElementChild;
+      lastElement.scrollIntoView();
     });
   };
 
@@ -249,7 +247,8 @@ const send = () => {
   createContent(null, stats.value.user, stats.value.text);
   stats.value.text = '';
   nextTick(() => {
-    const lastElement = chatRoom.value.lastElementChild;
+    let value = chatRoom.value;
+    const lastElement = value.lastElementChild;
     lastElement.scrollIntoView();
   });
 }
