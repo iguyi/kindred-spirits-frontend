@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 
 const myAxios: AxiosInstance = axios.create({
-    // todo 项目打包上线时, 这里需要改为线上环境地址
+    // todo 上线
     baseURL: 'http://localhost:8080/kindredspirits'
 });
 
