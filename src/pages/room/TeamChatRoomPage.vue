@@ -305,6 +305,7 @@ const createContent = (otherUser, currentUser, text) => {
     `
   } else {
     console.log("数据错误");
+    return;
   }
 
   // 汇总 html 拼接结果
