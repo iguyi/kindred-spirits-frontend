@@ -173,6 +173,14 @@
             >
               退出
             </van-button>
+            <van-button
+                v-if="currentUser.id === teamDetail.leaderId && currentUser.id === user.id"
+                @click="deleteTeam()"
+                size="mini"
+                type="danger"
+            >
+              解散
+            </van-button>
           </template>
         </van-cell>
       </van-collapse-item>
@@ -204,7 +212,7 @@
     <ShowUser :user="showUserData"/>
   </van-dialog>
 
-  <van-empty v-if="teamDetail.id === -1" description="不在当前队伍" />
+  <van-empty v-if="teamDetail.id === -1" description="不在当前队伍"/>
 </template>
 
 <script setup lang="ts">
@@ -347,6 +355,33 @@ const quit = async () => {
       delete teamChatMap[socketKey];
     }
     Toast.success('已退出队伍');
+    await router.push('/');
+    return;
+  }
+
+  Toast.fail(`${res.data.description}`);
+}
+
+/**
+ * 解散队伍
+ */
+const deleteTeam = async () => {
+  const res = await myAxios.post('/team/delete', {
+    'teamId': teamDetail.value.id
+  }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (res && res.data.code === 0 && res.data.data === true) {
+    let socketKey = `${currentUser.value.id}-${teamDetail.value.id}`
+    let teamChatMap = webSocketCache.teamChatMap;
+    if (teamChatMap.hasOwnProperty(socketKey)) {
+      await teamChatMap[socketKey].close();
+      delete teamChatMap[socketKey];
+    }
+    Toast.success('队伍已解散');
     await router.push('/');
     return;
   }
