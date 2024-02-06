@@ -61,7 +61,7 @@
 
       <!-- 密码 -->
       <van-field
-          v-if="addTeamData.status === 2"
+          v-if="addTeamData.status === '2'"
           v-model="addTeamData.password"
           type="password"
           name="password"
@@ -92,7 +92,7 @@ const initFormData = {
   "maxNum": 3,
   "expireTime": null,
   "description": "",
-  "status": 0,
+  "status": '0',
   "password": ""
 };
 const addTeamData = ref({...initFormData});
