@@ -23,6 +23,7 @@ import EditTeamAvatarPage from '../pages/edit/team/EditTeamAvatarPage.vue'
 import EditTeamBasePage from '../pages/edit/team/EditTeamBasePage.vue'
 import EditTeamDescriptionPage from '../pages/edit/team/EditTeamDescriptionPage.vue'
 import EditTeamExpirePage from '../pages/edit/team/EditTeamExpirePage.vue'
+import ChatPage from '../pages/room/ChatRoomPage.vue'
 
 const routes = [
     {path: '/', component: HomePage, meta: {navBar: true, vanTabbar: true, title: '聊天'}},
@@ -53,6 +54,7 @@ const routes = [
     {path: '/edit/team/base', component: EditTeamBasePage, meta: {navBar: false, vanTabbar: false, title: '编辑-基本信息'}},
     {path: '/edit/team/description', component: EditTeamDescriptionPage, meta: {navBar: false, vanTabbar: false, title: '编辑-队伍描述'}},
     {path: '/edit/team/expire', component: EditTeamExpirePage, meta: {navBar: false, vanTabbar: false, title: '编辑-过期时间'}},
+    {path: '/chat', component: ChatPage, meta: {navBar: false, vanTabbar: false, title: '测试'}},
 ]
 
 export default routes;
