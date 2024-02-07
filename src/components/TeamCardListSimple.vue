@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<TeamCardListSimpleProps>(), {
  */
 const sendMessage = (teamId, teamName) => {
   router.push({
-    path: '/chat/team',
+    path: '/chat',
     query: {
       teamId: teamId,
       teamName: teamName,
