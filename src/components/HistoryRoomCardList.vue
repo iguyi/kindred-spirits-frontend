@@ -11,8 +11,8 @@
     <template #extra class="sendTime">
       <div>
         {{ chatRoom.sendTime }}
-        <br>
-        <van-icon badge="99+" style="margin-left: 30px"/>
+<!--        <br>
+        <van-icon badge="99+" style="margin-left: 30px"/>-->
       </div>
     </template>
 
@@ -67,7 +67,7 @@ const click = (id, name, avatarUrl, isTeamChat) => {
   } else {
     // 进入对应的队伍聊天室
     router.push({
-      path: '/chat/team',
+      path: '/chat',
       query: {
         teamId: id,
         teamName: name,
