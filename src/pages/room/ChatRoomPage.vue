@@ -18,7 +18,7 @@
 
   <!-- 聊天页主题 -->
   <div class="chat-container">
-    <van-pull-refresh :v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <div class="content" ref="chatRoom">
         <div
             v-for="item in messages"
@@ -64,7 +64,7 @@
   </div>
 
   <!-- 好友信息展示 -->
-  <van-popup v-if="showFriendData" :v-model:show="show" style="width: 350px">
+  <van-popup v-if="showFriendData" v-model:show="show" style="width: 350px">
     <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 0px' }">
       对方信息
     </van-divider>
@@ -241,7 +241,7 @@ const onClickRight = async () => {
 const init = () => {
   let currentUserId = currentUser.value.id;
   let teamId = roomMeta.value.teamId;
-  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${currentUserId}/${teamId}`;
+  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${currentUserId}/${teamId}`;  // todo 上线
 
   if (roomMeta.value.isTeamChat) {
     // 初始化队伍聊天连接
