@@ -1,18 +1,17 @@
 <!-- todo 统计未读消息数 -->
 <template>
   <van-cell
-      @click="click(chatRoom.receiverId, chatRoom.receiverName, chatRoom.avatarUrl, chatRoom.chatType)"
+      @click="click(chatRoom.receiverId, chatRoom.receiverName, chatRoom.chatType)"
       v-for="chatRoom in chatRoomList"
       is-link
   >
     <template #right-icon></template>
 
-    <!--  添加好友  -->
+    <!--  最新一条消息的发送时间  -->
     <template #extra class="sendTime">
       <div>
         {{ chatRoom.sendTime }}
-<!--        <br>
-        <van-icon badge="99+" style="margin-left: 30px"/>-->
+<!--        <br> <van-icon badge="99+" style="margin-left: 30px"/>-->
       </div>
     </template>
 
@@ -49,19 +48,16 @@ const router = useRouter();
  *
  * @param id          - 好友 id 或队伍 id
  * @param name        - 好友昵称或队伍名
- * @param avatarUrl   - 头像
  * @param isTeamChat  - 是否是队伍
  */
-const click = (id, name, avatarUrl, isTeamChat) => {
-  // alert(`id: ${id}\n name: ${name}\n avatarUrl: ${avatarUrl}\n isTeamChat: ${isTeamChat}`);
+const click = (id, name, isTeamChat) => {
   if (isTeamChat === 1) {
     // 进入对应的私聊室
     router.push({
-      path: '/chat/private',
+      path: '/chat',
       query: {
         friendId: id,
-        username: name,
-        avatarUrl: avatarUrl
+        name: name
       }
     });
   } else {
