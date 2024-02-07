@@ -1,3 +1,4 @@
+<!-- 已废弃 -->
 <template>
   <!-- 顶部 -->
   <van-nav-bar
@@ -147,7 +148,6 @@ const init = () => {
     return;
   }
 
-  // todo 上线
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/${stats.value.team.teamId}`;
 
   socket = new WebSocket(socketUrl);
