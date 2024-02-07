@@ -16,6 +16,7 @@
     </template>
   </van-nav-bar>
 
+  <!-- 聊天页主题 -->
   <div class="chat-container">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <div class="content" ref="chatRoom">
@@ -37,7 +38,7 @@
           <!-- 昵称、消息 -->
           <div v-if="item.senderUser.id === currentUser.id">
             <div class="username">{{ item.senderUser.username }}</div>
-            <p class="text">{{ item.chatContent }}</p>
+            <div class="text">{{ item.chatContent }}</div>
           </div>
           <div v-if="item.senderUser.id !== currentUser.id" class="info">
             <span class="username">{{ item.senderUser.username }}</span>
@@ -61,6 +62,71 @@
       </van-field>
     </van-cell-group>
   </div>
+
+  <!-- 好友信息展示 -->
+  <van-popup v-if="showFriendData" v-model:show="show" style="width: 350px">
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 0px' }">
+      对方信息
+    </van-divider>
+    <van-cell title="头像" center>
+      <van-image
+          round
+          width="48px"
+          height="48px"
+          :src="showFriendData.friend.avatarUrl"
+      />
+    </van-cell>
+    <van-cell title="昵称" center :value="showFriendData.friend.username"/>
+    <van-cell title="个人简介" :value="showFriendData.friend.profile" center/>
+    <van-cell title="Ta 的标签" center :value="showFriendData.friend.tags">
+      <van-tag type="success" v-for="tag in showFriendData.friend.tags" style="margin-right: 3px">
+        {{ tag }}
+      </van-tag>
+    </van-cell>
+    <van-cell title="账号" :value="showFriendData.friend.userAccount"/>
+    <van-cell title="性别" :value="(showFriendData.friend.gender===0) ? `男` : `女`"/>
+    <van-cell title="手机号" :value="showFriendData.friend.phone"/>
+    <van-cell title="邮箱" :value="showFriendData.friend.email"/>
+    <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 0px' }"/>
+    <div style="text-align: center">
+      <van-button type="primary" size="mini" @click="returnPage">返回</van-button>
+      <van-button
+          v-show="showFriendData.relationStatus !== 3"
+          type="warning"
+          style="margin-left: 10px"
+          size="mini"
+          @click="updateRelation(2)"
+      >
+        拉黑
+      </van-button>
+      <van-button
+          v-show="((showFriendData.isActive === true && showFriendData.relationStatus !== 1)
+            || (showFriendData.isActive === false && showFriendData.relationStatus !== 2))
+            && showFriendData.relationStatus !== 3
+            && showFriendData.relationStatus !== 4
+            && showFriendData.relationStatus !== 5"
+          type="danger"
+          size="mini"
+          style="margin-left: 10px"
+          @click="updateRelation(1)"
+      >
+        删除
+      </van-button>
+      <van-button
+          v-show="showFriendData.relationStatus !== 0
+            && showFriendData.relationStatus !== 3
+            && showFriendData.relationStatus !== 4
+            && showFriendData.relationStatus !== 5"
+          type="success"
+          size="mini"
+          style="margin-left: 10px"
+          @click="addFriend()"
+      >
+        添加
+      </van-button>
+    </div>
+    <br>
+  </van-popup>
 </template>
 
 <script setup lang="ts">
@@ -72,6 +138,7 @@ import {getCurrentUser} from "../../services/user";
 import {webSocketCache} from "../../states/chat";
 import {Toast} from "vant";
 import myAxios from "../../plugins/myAxios";
+import {FriendType} from "../../models/friend";
 
 // 路由
 const router = useRouter();
@@ -79,6 +146,7 @@ const route = useRoute();
 
 // 组件状态
 const refreshing = ref(false);  // 下拉刷新状态
+const show = ref(false);  // 好友信息展示弹框状态
 
 // 页面数据
 const text = ref('');  // 输入框内容
@@ -88,8 +156,10 @@ const currentUser = ref<UserType>(null);
 const roomMeta = ref({
   name: '',
   teamId: 0,
+  friendId: 0,
   isTeamChat: false
 });
+const showFriendData = ref<FriendType>();  // 好友基本信息
 
 // 聊天功能
 const heartbeatInterval = ref(30 * 1000);  // 心跳检测间隔时间, 单位: s
@@ -101,14 +171,18 @@ onMounted(async () => {
   currentUser.value = await getCurrentUser();
 
   // 获取聊天室信息
-  const {name, teamId} = route.query;
+  const {name, teamId, friendId} = route.query;
   roomMeta.value.name = typeof name === 'string' ? name : '';
   roomMeta.value.teamId = Number.parseInt(typeof teamId === 'string' ? teamId : '0');
+  roomMeta.value.friendId = Number.parseInt(typeof friendId === 'string' ? friendId : '0');
 
   if (roomMeta.value.teamId === 0) {
     // 私聊
     roomMeta.value.isTeamChat = false;
-
+    const privateMessageData = await myAxios.post("/chat/private", {
+      friendId: roomMeta.value.friendId,
+    });
+    messages.value = privateMessageData.data.data;
   } else if (roomMeta.value.teamId !== 0) {
     // 队伍聊天
     roomMeta.value.isTeamChat = true;
@@ -131,10 +205,10 @@ onMounted(async () => {
 /**
  * 查看队伍信息
  */
-const onClickRight = () => {
+const onClickRight = async () => {
   if (roomMeta.value.isTeamChat) {
     // 查看队伍聊天室的消息
-    router.push({
+    await router.push({
       path: '/team/home',
       query: {
         "teamId": roomMeta.value.teamId,
@@ -142,7 +216,22 @@ const onClickRight = () => {
     });
   } else {
     // 查看私聊对象的消息
-    Toast.fail('todo');
+    if (!showFriendData.value) {
+      let res = await myAxios.get('/friend/show', {
+            params: {
+              friendId: roomMeta.value.friendId
+            }
+          }
+      );
+
+      if (res && res.data.code === 0 && res.data.data) {
+        res.data.data.friend.tags = JSON.parse(res.data.data.friend.tags);
+        showFriendData.value = res.data.data;
+      } else {
+        Toast.fail(res.data.description);
+      }
+    }
+    show.value = true;
   }
 }
 
@@ -154,7 +243,7 @@ const init = () => {
   let teamId = roomMeta.value.teamId;
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${currentUserId}/${teamId}`;
 
-  if (teamId !== 0) {
+  if (roomMeta.value.isTeamChat) {
     // 初始化队伍聊天连接
     // 构建队伍聊天连接的标识
     let socketKey = `${currentUserId}-${teamId}`;
@@ -164,48 +253,58 @@ const init = () => {
     if (teamChatMap.hasOwnProperty(socketKey) && teamChatMap[socketKey].readyState === 1) {
       // 当前初始化的队伍聊天连接已存在
       socket = teamChatMap[socketKey];
+    } else {
+      // 创建队伍聊天连接并初始化
+      socket = new WebSocket(socketUrl);
+      teamChatMap[socketKey] = socket;
+    }
+  } else {
+    // 初始化私聊连接
+    // 如果用于私聊的 WebSocket 已经存在且是打开状态, 直接使用
+    socket = webSocketCache.privateChat;
+    if (socket == null || socket.readyState !== 1) {
+      // 创建私聊连接并初始化
+      socket = new WebSocket(socketUrl);
+      webSocketCache.privateChat = socket;
+    }
+  }
+
+  // 无论之前对应聊天连接是否创建, 以下内容都必须重新定义, 因为需要将操作对象执行当前页面
+  // WebSocket 打开时的回调函数
+  socket.onopen = function () {
+    startHeartbeat(socket);
+  };
+
+  // 接收到消息时的回调函数
+  socket.onmessage = function (msg) {
+    // 解析接收到的消息
+    let data: ChatMessageType = JSON.parse(msg.data);
+
+    // 心跳检查
+    if (data.chatContent === "PONG") {
+      return;
     }
 
-    // 创建队伍聊天连接并初始化
-    socket = new WebSocket(socketUrl);
-    teamChatMap[socketKey] = socket;
-
-    // WebSocket 打开时的回调函数
-    socket.onopen = function () {
-      startHeartbeat(socket);
-    };
-
-    // 接收到消息时的回调函数
-    socket.onmessage = function (msg) {
-      // 解析接收到的消息
-      let data: ChatMessageType = JSON.parse(msg.data);
-
-      // 心跳检查
-      if (data.chatContent === "PONG") {
-        return;
-      }
-
-      if (data.errorFlag) {
-        Toast.fail(data.chatContent);
-        return;
-      }
-
-      // 保存接收到的消息
-      messages.value.push(data);
-
-      // 重载数据
-      scrollToBottom();
-    };
-
-    // 设置 WebSocket 关闭时执行的动作
-    socket.onclose = function () {
-      stopHeartbeat();
-    };
-
-    // 设置 WebSocket 发生错误事件时执行的动作
-    socket.onerror = function () {
-      Toast.fail("发生了错误");
+    if (data.errorFlag) {
+      Toast.fail(data.chatContent);
+      return;
     }
+
+    // 保存接收到的消息
+    messages.value.push(data);
+
+    // 重载数据
+    scrollToBottom();
+  };
+
+  // 设置 WebSocket 关闭时执行的动作
+  socket.onclose = function () {
+    stopHeartbeat();
+  };
+
+  // 设置 WebSocket 发生错误事件时执行的动作
+  socket.onerror = function () {
+    Toast.fail("发生了错误");
   }
 }
 
@@ -224,12 +323,14 @@ const send = () => {
   }
 
   let teamId = roomMeta.value.teamId;
+  let receiverId = roomMeta.value.friendId;
   let chatType: number = teamId === 0 ? 1 : 2
 
   // 发送消息
   let message = {
     senderId: currentUser.value.id,
     teamId: teamId,
+    receiverId: receiverId,
     chatContent: text.value,
     chatType: chatType,
   }
@@ -278,6 +379,45 @@ const stopHeartbeat = () => {
   heartbeatTimer.value = null;
 }
 
+/**
+ * 拉黑或删除对方
+ * @param operation - 1 表示删除; 2-表示拉黑
+ */
+const updateRelation = async (operation: number) => {
+  const result = await myAxios.post("/friend/update/relation", {
+    friendId: roomMeta.value.friendId,
+    operation: operation,
+    isActive: showFriendData.value.isActive
+  });
+  if (result && result.data.code === 0 && result.data.data === true) {
+    Toast.success('操作成功');
+    showFriendData.value = null;
+    return;
+  }
+  console.log(result ? result.data.description : 'result is null');
+  Toast.fail('系统繁忙');
+}
+
+/**
+ * 添加好友
+ */
+const addFriend = async () => {
+  const resultData = await myAxios.post("/friend/apply", {
+    receiverId: roomMeta.value.friendId,
+    messageType: 1
+  });
+
+  if (resultData.data.code === 0) {
+    Toast.success("等待对方同意");
+  } else {
+    Toast.fail(resultData.data.description);
+  }
+}
+
+// 关闭弹窗
+const returnPage = () => {
+  show.value = false;
+}
 
 // 将内容滚动到最后一个元素
 const scrollToBottom = () => {
@@ -371,6 +511,7 @@ const onRefresh = async () => {
 }
 
 .other .text {
+  text-align: center; /* 文本居中对齐 */
   align-self: flex-start;
 }
 
@@ -386,6 +527,7 @@ const onRefresh = async () => {
 
 .self .text {
   align-self: flex-end; /* 将文本内容放置在.avatar的下方 */
+  text-align: center; /* 文本居中对齐 */
   order: -1; /* 通过order属性调整显示顺序 */
 }
 
@@ -395,7 +537,7 @@ const onRefresh = async () => {
   text-align: right; /* 文本右对齐 */
   align-self: flex-start; /* 将用户名内容放置在.avatar的上方并且向右对齐 */
   margin-right: 10px; /* 与.avatar之间的间距 */
-  order: 1; /* 通过order属性调整显示顺序 */
   overflow: visible;
+  order: 1; /* 通过order属性调整显示顺序 */
 }
 </style>
