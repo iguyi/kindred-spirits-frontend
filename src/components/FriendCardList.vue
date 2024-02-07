@@ -10,7 +10,7 @@
       <van-button
           type="primary"
           size="mini"
-          @click="sendMessage(friend.id, friend.username, friend.avatarUrl)"
+          @click="sendMessage(friend.id, friend.username)"
       >
         发消息
       </van-button>
@@ -53,15 +53,13 @@ const props = withDefaults(defineProps<FriendCardListProps>(), {
  *
  * @param id        - 好友 id
  * @param username  - 好友昵称
- * @param avatarUrl - 好友头像
  */
-const sendMessage = (id, username, avatarUrl) => {
+const sendMessage = (id, username) => {
   router.push({
-    path: '/chat/private',
+    path: '/chat',
     query: {
       friendId: id,
-      username: username,
-      avatarUrl: avatarUrl
+      name: username
     }
   });
 }
