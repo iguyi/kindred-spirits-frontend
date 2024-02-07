@@ -18,7 +18,7 @@
 
   <!-- 聊天页主题 -->
   <div class="chat-container">
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh :v-model="refreshing" @refresh="onRefresh">
       <div class="content" ref="chatRoom">
         <div
             v-for="item in messages"
@@ -64,7 +64,7 @@
   </div>
 
   <!-- 好友信息展示 -->
-  <van-popup v-if="showFriendData" v-model:show="show" style="width: 350px">
+  <van-popup v-if="showFriendData" :v-model:show="show" style="width: 350px">
     <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 0px' }">
       对方信息
     </van-divider>
@@ -408,7 +408,7 @@ const addFriend = async () => {
   });
 
   if (resultData.data.code === 0) {
-    Toast.success("等待对方同意");
+    Toast.success('等待对方同意');
   } else {
     Toast.fail(resultData.data.description);
   }
