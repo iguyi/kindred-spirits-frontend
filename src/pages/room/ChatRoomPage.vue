@@ -11,10 +11,7 @@
     <template #left>
       <van-icon name="arrow-left" size="18"/>
     </template>
-    <template #right v-if="roomMeta.teamId !== 0">
-      <van-icon name="contact" size="18"/>
-    </template>
-    <template #right v-if="roomMeta.teamId === 0">
+    <template #right>
       <van-icon name="contact" size="18"/>
     </template>
   </van-nav-bar>
