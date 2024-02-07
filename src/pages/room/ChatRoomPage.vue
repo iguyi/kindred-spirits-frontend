@@ -241,7 +241,7 @@ const onClickRight = async () => {
 const init = () => {
   let currentUserId = currentUser.value.id;
   let teamId = roomMeta.value.teamId;
-  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${currentUserId}/${teamId}`;
+  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${currentUserId}/${teamId}`;  // todo 上线
 
   if (roomMeta.value.isTeamChat) {
     // 初始化队伍聊天连接
