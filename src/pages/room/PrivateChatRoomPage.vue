@@ -1,3 +1,4 @@
+<!-- 已废弃 -->
 <template>
   <!-- 顶部 -->
   <van-nav-bar
@@ -216,7 +217,7 @@ const init = () => {
     socket = webSocketCache.privateChat;
     return;
   }
-  // todo 上线
+
   let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/0`;
 
   socket = new WebSocket(socketUrl);
