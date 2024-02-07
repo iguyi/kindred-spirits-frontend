@@ -36,7 +36,7 @@
           />
 
           <!-- 昵称、消息 -->
-          <div v-if="item.senderUser.id === currentUser.id">
+          <div v-if="item.senderUser.id === currentUser.id" class="selfInfo">
             <div class="username">{{ item.senderUser.username }}</div>
             <div class="text">{{ item.chatContent }}</div>
           </div>
@@ -457,12 +457,6 @@ const onRefresh = async () => {
   overflow-y: auto;
 }
 
-.message {
-  display: flex;
-  align-items: center;
-  margin: 10px 10px;
-}
-
 .content {
   padding-top: 0;
   padding-bottom: 0;
@@ -501,6 +495,13 @@ const onRefresh = async () => {
   align-self: flex-start;
 }
 
+.selfInfo {
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  order: 1;
+}
+
 .text {
   margin-top: 5px;
   padding: 10px;
@@ -511,33 +512,28 @@ const onRefresh = async () => {
 }
 
 .other .text {
-  text-align: center; /* 文本居中对齐 */
+  text-align: center;
   align-self: flex-start;
 }
 
-.self {
-  display: flex;
-  align-items: flex-start;
-}
-
 .self .avatar {
-  align-self: flex-start; /* 将.avatar内容放置在最右侧的上方 */
+  align-self: flex-start;
   margin-left: auto; /* 将.avatar内容放置在最右侧 */
 }
 
 .self .text {
-  align-self: flex-end; /* 将文本内容放置在.avatar的下方 */
-  text-align: center; /* 文本居中对齐 */
-  order: -1; /* 通过order属性调整显示顺序 */
+  display: inline-block;
+  align-self: flex-end;
+  text-align: center;
+  order: 2;
 }
 
 .self .username {
-  max-width: 300px;
+  display: inline-block;
   font-size: 12px;
-  text-align: right; /* 文本右对齐 */
-  align-self: flex-start; /* 将用户名内容放置在.avatar的上方并且向右对齐 */
-  margin-right: 10px; /* 与.avatar之间的间距 */
+  text-align: center;
+  align-self: flex-end;
   overflow: visible;
-  order: 1; /* 通过order属性调整显示顺序 */
+  order: 1;
 }
 </style>
