@@ -66,7 +66,7 @@ const click = (id, name, isTeamChat) => {
       path: '/chat',
       query: {
         teamId: id,
-        teamName: name,
+        name: name,
       }
     });
   }
