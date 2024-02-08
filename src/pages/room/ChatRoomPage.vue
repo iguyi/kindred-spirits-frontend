@@ -17,51 +17,49 @@
   </van-nav-bar>
 
   <!-- 聊天页主题 -->
-  <div class="chat-container">
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <div class="content" ref="chatRoom">
-        <div
-            v-for="item in messages"
-            :class="item.senderUser.id === currentUser.id ? 'message self' : 'message other'"
-        >
-          <!-- 头像 -->
-          <div v-if="item.senderUser.id === currentUser.id" class="myInfo info">
-            <img :alt="item.senderUser.username" class="avatar" :src="item.senderUser.avatarUrl">
-          </div>
-          <img
-              v-if="item.senderUser.id !== currentUser.id"
-              class="avatar"
-              :src="item.senderUser.avatarUrl"
-              :alt="item.senderUser.username"
-          />
+  <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+    <div class="content" ref="chatRoom">
+      <div
+          v-for="item in messages"
+          :class="item.senderUser.id === currentUser.id ? 'message self' : 'message other'"
+      >
+        <!-- 头像 -->
+        <div v-if="item.senderUser.id === currentUser.id" class="myInfo info">
+          <img :alt="item.senderUser.username" class="avatar" :src="item.senderUser.avatarUrl">
+        </div>
+        <img
+            v-if="item.senderUser.id !== currentUser.id"
+            class="avatar"
+            :src="item.senderUser.avatarUrl"
+            :alt="item.senderUser.username"
+        />
 
-          <!-- 昵称、消息 -->
-          <div v-if="item.senderUser.id === currentUser.id" class="selfInfo">
-            <div class="username">{{ item.senderUser.username }}</div>
-            <div class="text">{{ item.chatContent }}</div>
-          </div>
-          <div v-if="item.senderUser.id !== currentUser.id" class="info">
-            <span class="username">{{ item.senderUser.username }}</span>
-            <p class="text">{{ item.chatContent }}</p>
-          </div>
+        <!-- 昵称、消息 -->
+        <div v-if="item.senderUser.id === currentUser.id" class="selfInfo">
+          <div class="username">{{ item.senderUser.username }}</div>
+          <div class="text">{{ item.chatContent }}</div>
+        </div>
+        <div v-if="item.senderUser.id !== currentUser.id" class="info">
+          <span class="username">{{ item.senderUser.username }}</span>
+          <p class="text">{{ item.chatContent }}</p>
         </div>
       </div>
-    </van-pull-refresh>
+    </div>
+  </van-pull-refresh>
 
-    <!-- 输入 -->
-    <van-cell-group inset style="position: fixed;bottom: 0;width: 100%">
-      <van-field
-          v-model="text"
-          center
-          clearable
-          placeholder="请输入..."
-      >
-        <template #button>
-          <van-button size="small" type="primary" @click="send" style="margin-right: 16px">发送</van-button>
-        </template>
-      </van-field>
-    </van-cell-group>
-  </div>
+  <!-- 输入 -->
+  <van-cell-group inset style="position: fixed;bottom: 0;width: 100%">
+    <van-field
+        v-model="text"
+        center
+        clearable
+        placeholder="请输入..."
+    >
+      <template #button>
+        <van-button size="small" type="primary" @click="send" style="margin-right: 16px">发送</van-button>
+      </template>
+    </van-field>
+  </van-cell-group>
 
   <!-- 好友信息展示 -->
   <van-popup v-if="showFriendData" v-model:show="show" style="width: 350px">
@@ -447,14 +445,6 @@ const onRefresh = async () => {
   left: 0;
   right: 0;
   z-index: 2;
-}
-
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
 }
 
 .content {
