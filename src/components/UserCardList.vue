@@ -36,15 +36,19 @@
         </div>
         <!-- 用户信息 -->
         <div style="margin-left: 5px">
-          <span class="custom-title">{{ user.username }}</span><br>
+          <span class="custom-title">
+            {{ user.username.length <= 11 ? user.username : user.username.substring(0, 8) + '...' }}
+          </span><br>
           <van-tag class="custom-tag"
-                   v-for="tag in user.tags"
+                   v-for="(tag, index) in displayedTags(user.tags)" :key="index"
                    type="danger"
           >
             {{ tag }}
           </van-tag>
           <br>
-          <span v-if="user.profile">{{ user.profile.length<10?user.profile:user.profile.substring(0,10)+'...'}}</span>
+          <span
+              v-if="user.profile">{{ user.profile.length < 10 ? user.profile : user.profile.substring(0, 10) + '...' }}
+          </span>
         </div>
       </div>
     </template>
@@ -127,6 +131,13 @@ const showUser = async (userId: number) => {
 const showDown = () => {
   showUserData.value = {};
 }
+
+const displayedTags = (tags: string[]) => {
+  if (tags === null) {
+    return [];
+  }
+  return tags.slice(0, 4);
+};
 
 interface UserCardListProps {
   userList: UserType[];
