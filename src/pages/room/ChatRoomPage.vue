@@ -36,8 +36,8 @@
 
         <!-- 昵称、消息 -->
         <div v-if="item.senderUser.id === currentUser.id" class="selfInfo">
-          <div class="username">{{ item.senderUser.username }}</div>
-          <div class="text">{{ item.chatContent }}</div>
+          <span class="username">{{ item.senderUser.username }}</span>
+          <p class="text">{{ item.chatContent }}</p>
         </div>
         <div v-if="item.senderUser.id !== currentUser.id" class="info">
           <span class="username">{{ item.senderUser.username }}</span>
@@ -351,7 +351,7 @@ const send = () => {
   }
   messages.value.push(chatMessage);
 
-  // 情况输入框
+  // 清空输入框
   text.value = '';
 
   // 重载页面
@@ -502,8 +502,17 @@ const onRefresh = async () => {
 }
 
 .other .text {
-  text-align: center;
+  max-width: 230px;
+  text-align: left;
   align-self: flex-start;
+}
+
+.other {
+  margin-top: 5px;
+}
+
+.self {
+  margin-top: 5px;
 }
 
 .self .avatar {
@@ -512,10 +521,10 @@ const onRefresh = async () => {
 }
 
 .self .text {
+  max-width: 230px;
   display: inline-block;
   align-self: flex-end;
-  text-align: center;
-  order: 2;
+  text-align: left;
 }
 
 .self .username {
@@ -524,6 +533,5 @@ const onRefresh = async () => {
   text-align: center;
   align-self: flex-end;
   overflow: visible;
-  order: 1;
 }
 </style>
