@@ -11,7 +11,7 @@
     <template #extra class="sendTime">
       <div>
         {{ chatRoom.sendTime }}
-<!--        <br> <van-icon badge="99+" style="margin-left: 30px"/>-->
+        <!--        <br> <van-icon badge="99+" style="margin-left: 30px"/>-->
       </div>
     </template>
 
@@ -29,8 +29,14 @@
 
         <!-- 用户信息 -->
         <div style="margin-left: 5px">
-          <span class="custom-title">{{ chatRoom.receiverName }}</span><br>
-          <span>{{ chatRoom.lastRecord }}</span>
+          <span class="custom-title">
+            {{
+              chatRoom.receiverName.length <= 11 ? chatRoom.receiverName : chatRoom.receiverName.substring(0, 8) + '...'
+            }}
+          </span><br>
+          <span>
+            {{ chatRoom.lastRecord.length <= 20 ? chatRoom.lastRecord : chatRoom.lastRecord.substring(0, 17) + '...' }}
+          </span>
         </div>
       </div>
     </template>
