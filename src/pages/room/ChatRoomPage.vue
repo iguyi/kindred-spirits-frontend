@@ -137,6 +137,7 @@ import {webSocketCache} from "../../states/chat";
 import {Toast} from "vant";
 import myAxios from "../../plugins/myAxios";
 import {FriendType} from "../../models/friend";
+import {ChatSessionStateRequest} from "../../models/chatSessionStateRequest";
 
 // 路由
 const router = useRouter();
@@ -195,6 +196,13 @@ onMounted(async () => {
   }
 
   init();
+
+  // 将窗口状态设置为打开
+  await myAxios.post('/unread/setting/session/state', {
+    id: roomMeta.value.friendId !== 0 ? roomMeta.value.friendId : roomMeta.value.teamId,
+    chatType: roomMeta.value.isTeamChat ? 2 : 1,
+    state: true
+  });
 
   // 重载页面
   scrollToBottom();
@@ -427,7 +435,13 @@ const scrollToBottom = () => {
 };
 
 // 返回上一个页面
-const onClickLeft = () => {
+const onClickLeft = async () => {
+  // 将窗口状态设置为关闭
+  await myAxios.post('/unread/setting/session/state', {
+    chatType: roomMeta.value.isTeamChat ? 2 : 1,
+    id: roomMeta.value.friendId !== 0 ? roomMeta.value.friendId : roomMeta.value.teamId,
+    state: false
+  });
   router.back();
 }
 
