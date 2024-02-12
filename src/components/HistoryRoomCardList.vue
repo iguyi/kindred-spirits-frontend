@@ -1,4 +1,3 @@
-<!-- todo 统计未读消息数 -->
 <template>
   <van-cell
       @click="click(chatRoom.receiverId, chatRoom.receiverName, chatRoom.chatType)"
