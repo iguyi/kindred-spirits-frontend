@@ -58,7 +58,7 @@ const sendMessage = (teamId, teamName) => {
     path: '/chat',
     query: {
       teamId: teamId,
-      teamName: teamName,
+      name: teamName,
     }
   });
 }
