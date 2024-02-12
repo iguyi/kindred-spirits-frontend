@@ -138,6 +138,7 @@ import {Toast} from "vant";
 import myAxios from "../../plugins/myAxios";
 import {FriendType} from "../../models/friend";
 import {ChatSessionStateRequest} from "../../models/chatSessionStateRequest";
+import backendUrl from "../../config/url";
 
 // 路由
 const router = useRouter();
@@ -247,7 +248,7 @@ const onClickRight = async () => {
 const init = () => {
   let currentUserId = currentUser.value.id;
   let teamId = roomMeta.value.teamId;
-  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${currentUserId}/${teamId}`;  // todo 上线
+  let socketUrl = `ws://${backendUrl}/websocket/${currentUserId}/${teamId}`;
 
   if (roomMeta.value.isTeamChat) {
     // 初始化队伍聊天连接
