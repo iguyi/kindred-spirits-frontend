@@ -1,8 +1,8 @@
 import axios, {AxiosInstance} from "axios";
+import backendUrl from "../config/url";
 
 const myAxios: AxiosInstance = axios.create({
-    // todo 上线
-    baseURL: 'http://localhost:8080/kindredspirits'
+    baseURL: `http://${backendUrl}`
 });
 
 // 发送请求时携带 cookie
