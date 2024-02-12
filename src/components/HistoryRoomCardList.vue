@@ -11,7 +11,12 @@
     <template #extra class="sendTime">
       <div>
         {{ chatRoom.sendTime }}
-        <!--        <br> <van-icon badge="99+" style="margin-left: 30px"/>-->
+        <br v-if="chatRoom.unreadMessageNum > 0">
+        <van-icon
+            v-if="chatRoom.unreadMessageNum > 0"
+            :badge="chatRoom.unreadMessageNum > 99 ? '99+' : chatRoom.unreadMessageNum"
+            style="margin-left: 30px"
+        />
       </div>
     </template>
 
