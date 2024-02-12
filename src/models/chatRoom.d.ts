@@ -36,6 +36,6 @@ export type ChatRoomType = {
     /**
      * 未读消息数
      */
-    unreadMessageNum: string;
+    unreadMessageNum: number;
 
 }
