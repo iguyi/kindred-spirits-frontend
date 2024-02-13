@@ -292,8 +292,14 @@ const init = () => {
       return;
     }
 
+    // 发送消息出错
     if (data.errorFlag) {
       Toast.fail(data.chatContent);
+      return;
+    }
+
+    // 系统消息, 不显示在聊天框内
+    if (data.senderUser === null) {
       return;
     }
 
