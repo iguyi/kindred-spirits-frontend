@@ -162,7 +162,7 @@ const roomMeta = ref({
 const showFriendData = ref<FriendType>();  // 好友基本信息
 
 // 聊天功能
-const heartbeatInterval = ref(30 * 1000);  // 心跳检测间隔时间, 单位: s
+const heartbeatInterval = ref(30 * 1000);  // 心跳检测间隔时间, 单位: ms
 const heartbeatTimer = ref(null);  // 心跳计时器
 let socket = null;  // WebSocket 连接
 
