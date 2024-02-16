@@ -29,9 +29,11 @@
         <!-- 队伍信息 -->
         <div style="margin-left: 5px">
           <span class="custom-title">{{ team.name }}</span><br>
-          <span>剩余位置: {{team.maxNum-team.num}}</span>
+          <span style="color: #0084ff">剩余位置: {{team.maxNum-team.num}}</span>
           <br>
-          <span>{{ team.description }}</span>
+          <span style="color: #969799">
+            {{ team.description.length<=12 ? team.description : team.description.substring(0, 10)+'...'}}
+          </span>
         </div>
       </div>
     </template>
