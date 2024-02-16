@@ -26,15 +26,10 @@
               :src="team.avatarUrl"
           />
         </div>
-        <!-- 用户信息 -->
+        <!-- 队伍信息 -->
         <div style="margin-left: 5px">
           <span class="custom-title">{{ team.name }}</span><br>
-          <van-tag
-              class="custom-tag"
-              type="danger"
-          >
-            111
-          </van-tag>
+          <span>剩余位置: {{team.maxNum-team.num}}</span>
           <br>
           <span>{{ team.description }}</span>
         </div>
