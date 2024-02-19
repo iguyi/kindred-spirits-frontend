@@ -8,6 +8,7 @@ export type TeamType = {
     avatarUrl: string,
     name: string;
     description: string;
+    num: number;
     maxNum: number;
     status: number;
     createUser?: UserType;
