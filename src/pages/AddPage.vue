@@ -1,14 +1,15 @@
 <template>
-  <van-tabs v-model:active="active" :swipeable="true" :offset-top="45" @change="findTeam" sticky>
+  <!--  <van-tabs v-model:active="active" :swipeable="true" :offset-top="45" @change="findTeam" sticky>-->
+  <van-tabs :swipeable="true" :offset-top="45" @change="findTeam" sticky>
     <van-tab title="找道友">
       <van-cell center title="心动模式">
         <template #right-icon>
-          <van-switch v-model="isLike" size="24" />
+          <van-switch v-model="isLike" size="24"/>
         </template>
       </van-cell>
       <span>&nbsp;</span>
 
-      <user-card-list :user-list="userList"/>
+      <user-card-list :user-list="userList" :flush-path="isLike ? userCarType.match : userCarType.recommend"/>
       <van-empty v-if="(!userList || userList.length < 1) && $route.meta.result" image="search" description="数据为空"/>
     </van-tab>
 
@@ -27,6 +28,7 @@ import qs from "qs";
 import UserCardList from "../components/UserCardList.vue";
 import {useRouter} from "vue-router";
 import TeamCardList from "../components/TeamCardList.vue";
+import {userCarType} from "../states/userCar";
 
 const router = useRouter();
 
@@ -62,7 +64,6 @@ const loadData = async () => {
         pageNum: 1
       },
       paramsSerializer: params => {
-        // opts: arg[0]=1&arg[1]=2
         return qs.stringify(params, {indices: false});
       }
     }).then(function (response) {
