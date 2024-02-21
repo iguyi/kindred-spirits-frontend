@@ -87,6 +87,7 @@ import {ref} from "vue";
 import ShowUser from "./ShowUser.vue";
 import {userCarType} from "../states/userCar";
 import {basePageSize} from "../config/page";
+import qs from "qs";
 
 // 列表相关参数
 const loading = ref(false);
@@ -122,7 +123,7 @@ const showUserData = ref({});
 const show = ref(false);
 
 /**
- * 查看用户详细详细
+ * 查看用户详细信息
  *
  * @param userId - 用户 id
  */
@@ -159,29 +160,57 @@ const displayedTags = (tags: string[]) => {
  * 异步加载数据
  */
 const onLoad = async () => {
+  // 最佳推荐
   if (props.flushPath === userCarType.match) {
-    // 最佳推荐
     loading.value = false;
     finished.value = true;
     return;
   }
 
-  let userListData = await myAxios.get(props.flushPath, {
-    params: {
-      searchCondition: props.searchCondition,
-      pageSize: basePageSize,
-      pageNum: pageNum.value
-    },
-  }).then(function (response) {
-    loading.value = false;
-    console.log(`${props.flushPath} succeed. ${response}`);
-    return response.data?.data;
-  }).catch(function (error) {
-    loading.value = false;
-    console.log(`{props.flushPath} error. ${error}`);
-    Toast.fail('系统繁忙');
-    return;
-  });
+  // 记录数据
+  let userListData = null;
+
+  if (props.flushPath === userCarType.searchUserByTag) {
+    // 标签搜索
+    userListData = await myAxios.get(props.flushPath, {
+      params: {
+        tagNameList: props.tagNameList,
+        pageSize: basePageSize,
+        pageNum: pageNum.value
+      },
+      paramsSerializer: params => {
+        // opts: arg[0]=1&arg[1]=2
+        return qs.stringify(params, {indices: false});
+      }
+    }).then(function (response) {
+      loading.value = false;
+      console.log(`${props.flushPath} succeed. ${response}`);
+      return response.data?.data;
+    }).catch(function (error) {
+      loading.value = false;
+      console.log(`{props.flushPath} error. ${error}`);
+      Toast.fail('系统繁忙');
+      return;
+    });
+  } else if (props.flushPath === userCarType.searchUserByFree) {
+    // 自由搜索
+    userListData = await myAxios.get(props.flushPath, {
+      params: {
+        searchCondition: props.searchCondition,
+        pageSize: basePageSize,
+        pageNum: pageNum.value
+      },
+    }).then(function (response) {
+      loading.value = false;
+      console.log(`${props.flushPath} succeed. ${response}`);
+      return response.data?.data;
+    }).catch(function (error) {
+      loading.value = false;
+      console.log(`{props.flushPath} error. ${error}`);
+      Toast.fail('系统繁忙');
+      return;
+    });
+  }
 
   if (userListData === null || userListData.length === 0) {
     // 无数据可加载
@@ -203,13 +232,17 @@ interface UserCardListProps {
   userList: UserType[];
   flushPath: string;
   searchCondition: string;
+  tagNameList: string[];
 }
 
 const props = withDefaults(defineProps<UserCardListProps>(), {
   // @ts-ignore
   userList: [] as UserType[],
   flushPath: '' as string,
-  searchCondition: "" as string
+  searchCondition: "" as string,
+  tagNameList: (props: UserCardListProps) => {
+    return [];
+  }
 });
 </script>
 
