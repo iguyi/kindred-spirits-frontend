@@ -29,6 +29,7 @@ import UserCardList from "../components/UserCardList.vue";
 import {useRouter} from "vue-router";
 import TeamCardList from "../components/TeamCardList.vue";
 import {userCarType} from "../states/userCar";
+import {basePageSize, basePageNumInit, likePageSize} from "../config/page"
 
 const router = useRouter();
 
@@ -42,13 +43,12 @@ const userList = ref([]);
 
 const loadData = async () => {
   let userListData;
-  let dataNum = 10;
 
   if (isLike.value) {
     // 心动模式
     userListData = await myAxios.get('/user/match', {
       params: {
-        num: dataNum
+        num: likePageSize
       }
     }).then(function (response) {
       console.log('/user/match succeed. ' + response);
@@ -60,8 +60,8 @@ const loadData = async () => {
     // 普通模式
     userListData = await myAxios.get('/user/recommend', {
       params: {
-        pageSize: dataNum,
-        pageNum: 1
+        pageSize: basePageSize,
+        pageNum: basePageNumInit
       },
       paramsSerializer: params => {
         return qs.stringify(params, {indices: false});
