@@ -1,20 +1,27 @@
 <template>
-  <user-card-list :user-list="userList" :v-if="isUserResult"/>
+  <user-card-list
+      :user-list="userList"
+      :flush-path="userSearchType === 1 ? userCarType.searchUserByTag : userCarType.searchUserByFree"
+      :v-if="isUserResult && userSearchType !== 0"
+  />
   <team-card-list :team-list="teamList" :v-if="!isUserResult"/>
   <van-empty
       v-if="(!userList || userList.length < 1) && (!teamList || teamList.length < 1) && $route.meta.result"
       image="search"
-      description="暂无搜索结果"/>
+      description="暂无搜索结果"
+  />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useRoute} from "vue-router";
 import {onMounted, ref} from "vue";
-import myAxios from "../../plugins/myAxios.ts";
+import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
 import qs from "qs";
 import UserCardList from "../../components/UserCardList.vue";
 import TeamCardList from "../../components/TeamCardList.vue";
+import {basePageNumInit, basePageSize} from "../../config/page";
+import {userCarType} from "../../states/userCar";
 
 const route = useRoute();
 
@@ -29,16 +36,25 @@ const userList = ref([]);
 const teamList = ref([]);
 
 /**
- * 是否是是用户搜索结果
+ * 是否是用户搜索结果
  */
 const isUserResult = ref(true);
+
+/**
+ * 0 - 展示的是队伍搜索结果
+ * 1 - 展示的是根据标签搜索用户的搜索结果
+ * 2- 展示的是自由搜索用户的搜索结果
+ */
+const userSearchType = ref(0);
 
 onMounted(async () => {
   const {model, tags, searchCondition, searchTeamCondition} = await route.query;
 
   isUserResult.value = model !== '3';
 
+  // 标签搜索
   if (model === '1') {
+    userSearchType.value = 1;
     const userListData = await myAxios.get('/user/search/tags', {
       params: {
         tagNameList: tags,
@@ -64,10 +80,14 @@ onMounted(async () => {
     return;
   }
 
+  // 自由搜索
   if (model === '2') {
+    userSearchType.value = 2;
     const userListData = await myAxios.get('/user/search', {
       params: {
         searchCondition: searchCondition,
+        pageSize: basePageSize,
+        pageNum: basePageNumInit
       }
     });
     if (userListData) {
@@ -79,6 +99,7 @@ onMounted(async () => {
     return;
   }
 
+  // 队伍搜索
   const teamListData = await myAxios.get('/team/search', {
     params: {
       searchCondition: searchTeamCondition,
