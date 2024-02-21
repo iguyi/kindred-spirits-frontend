@@ -159,8 +159,8 @@ const displayedTags = (tags: string[]) => {
  * 异步加载数据
  */
 const onLoad = async () => {
-  if (props.flushPath === userCarType.match || props.flushPath===userCarType.search) {
-    // 无数据可加载
+  if (props.flushPath === userCarType.match) {
+    // 最佳推荐
     loading.value = false;
     finished.value = true;
     return;
@@ -168,6 +168,7 @@ const onLoad = async () => {
 
   let userListData = await myAxios.get(props.flushPath, {
     params: {
+      searchCondition: props.searchCondition,
       pageSize: basePageSize,
       pageNum: pageNum.value
     },
@@ -201,12 +202,14 @@ const onLoad = async () => {
 interface UserCardListProps {
   userList: UserType[];
   flushPath: string;
+  searchCondition: string;
 }
 
 const props = withDefaults(defineProps<UserCardListProps>(), {
   // @ts-ignore
   userList: [] as UserType[],
-  flushPath: '' as string
+  flushPath: '' as string,
+  searchCondition: "" as string
 });
 </script>
 
