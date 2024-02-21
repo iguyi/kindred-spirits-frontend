@@ -86,11 +86,11 @@ import {Toast} from "vant";
 import {ref} from "vue";
 import ShowUser from "./ShowUser.vue";
 import {userCarType} from "../states/userCar";
+import {basePageSize} from "../config/page";
 
 // 列表相关参数
 const loading = ref(false);
 const finished = ref(false);
-const pageSize = ref(10);  // 每页 10 条数据
 const pageNum = ref(2);  // 初始页数为 2, 因为首次展示的数据是第一页的数据
 
 /**
@@ -168,7 +168,7 @@ const onLoad = async () => {
 
   let userListData = await myAxios.get(props.flushPath, {
     params: {
-      pageSize: pageSize.value,
+      pageSize: basePageSize,
       pageNum: pageNum.value
     },
   }).then(function (response) {
