@@ -1,10 +1,12 @@
 <template>
   <user-card-list
       :user-list="userList"
+      :tag-name-list="userSearchType === 1 ? userSearchConditionByTag : []"
+      :search-condition="userSearchType === 1 ? '' : userSearchCondition"
       :flush-path="userSearchType === 1 ? userCarType.searchUserByTag : userCarType.searchUserByFree"
-      :v-if="isUserResult && userSearchType !== 0"
+      v-if="isUserResult && userSearchType !== 0"
   />
-  <team-card-list :team-list="teamList" :v-if="!isUserResult"/>
+  <team-card-list :team-list="teamList" v-if="!isUserResult"/>
   <van-empty
       v-if="(!userList || userList.length < 1) && (!teamList || teamList.length < 1) && $route.meta.result"
       image="search"
@@ -47,7 +49,15 @@ const isUserResult = ref(true);
  */
 const userSearchType = ref(0);
 
+const userSearchCondition = ref('');
+
+const userSearchConditionByTag = ref<string[]>([]);
+
+const teamSearchCondition = ref('');
+
 onMounted(async () => {
+  userSearchType.value = 0;
+  isUserResult.value = true;
   const {model, tags, searchCondition, searchTeamCondition} = await route.query;
 
   isUserResult.value = model !== '3';
@@ -55,9 +65,12 @@ onMounted(async () => {
   // 标签搜索
   if (model === '1') {
     userSearchType.value = 1;
+    userSearchConditionByTag.value = tags;
     const userListData = await myAxios.get('/user/search/tags', {
       params: {
         tagNameList: tags,
+        pageSize: basePageSize,
+        pageNum: basePageNumInit
       },
       paramsSerializer: params => {
         // opts: arg[0]=1&arg[1]=2
@@ -83,6 +96,7 @@ onMounted(async () => {
   // 自由搜索
   if (model === '2') {
     userSearchType.value = 2;
+    userSearchCondition.value = searchCondition;
     const userListData = await myAxios.get('/user/search', {
       params: {
         searchCondition: searchCondition,
@@ -100,6 +114,8 @@ onMounted(async () => {
   }
 
   // 队伍搜索
+  teamSearchCondition.value = searchTeamCondition;
+  isUserResult.value = false;
   const teamListData = await myAxios.get('/team/search', {
     params: {
       searchCondition: searchTeamCondition,
