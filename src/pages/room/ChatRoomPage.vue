@@ -299,7 +299,7 @@ const init = () => {
     }
 
     // 系统消息, 不显示在聊天框内
-    if (data.senderUser === null) {
+    if (data.senderUser === undefined) {
       return;
     }
 
