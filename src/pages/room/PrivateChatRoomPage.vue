@@ -105,6 +105,7 @@ import {Toast} from "vant";
 import {getCurrentUser} from "../../services/user";
 import myAxios from "../../plugins/myAxios";
 import {webSocketCache} from "../../states/chat";
+import backendUrl from "../../config/url";
 
 const router = useRouter();
 const route = useRoute();
@@ -218,7 +219,7 @@ const init = () => {
     return;
   }
 
-  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/0`;
+  let socketUrl = `ws://${backendUrl}/websocket/${uid}/0`;
 
   socket = new WebSocket(socketUrl);
   webSocketCache.privateChat = socket;

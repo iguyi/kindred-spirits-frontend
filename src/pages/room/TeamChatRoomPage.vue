@@ -41,6 +41,7 @@ import myAxios from "../../plugins/myAxios";
 import {Toast} from "vant";
 import {getCurrentUser} from "../../services/user";
 import {webSocketCache} from "../../states/chat";
+import backendUrl from "../../config/url";
 
 const router = useRouter();
 const route = useRoute();
@@ -148,7 +149,7 @@ const init = () => {
     return;
   }
 
-  let socketUrl = `ws://localhost:8080/kindredspirits/websocket/${uid}/${stats.value.team.teamId}`;
+  let socketUrl = `ws://${backendUrl}/websocket/${uid}/${stats.value.team.teamId}`;
 
   socket = new WebSocket(socketUrl);
   webSocketCache.teamChatMap[socketKey] = socket;
