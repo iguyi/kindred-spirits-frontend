@@ -210,6 +210,23 @@ const onLoad = async () => {
       Toast.fail('系统繁忙');
       return;
     });
+  } else if (props.flushPath === userCarType.recommend) {
+    // 普通匹配
+    userListData = await myAxios.get(props.flushPath, {
+      params: {
+        pageSize: basePageSize,
+        pageNum: pageNum.value
+      },
+    }).then(function (response) {
+      loading.value = false;
+      console.log(`${props.flushPath} succeed. ${response}`);
+      return response.data?.data;
+    }).catch(function (error) {
+      loading.value = false;
+      console.log(`{props.flushPath} error. ${error}`);
+      Toast.fail('系统繁忙');
+      return;
+    });
   }
 
   if (userListData === null || userListData.length === 0) {
