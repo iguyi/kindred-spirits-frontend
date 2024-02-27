@@ -86,7 +86,7 @@ import {Toast} from "vant";
 import {ref} from "vue";
 import ShowUser from "./ShowUser.vue";
 import {userCarType} from "../states/userCar";
-import {basePageSize} from "../config/page";
+import {basePageNumInit, basePageSize, likePageSize} from "../config/page";
 import qs from "qs";
 
 // 列表相关参数
@@ -160,13 +160,6 @@ const displayedTags = (tags: string[]) => {
  * 异步加载数据
  */
 const onLoad = async () => {
-  // 最佳推荐
-  if (props.flushPath === userCarType.match) {
-    loading.value = false;
-    finished.value = true;
-    return;
-  }
-
   // 记录数据
   let userListData = null;
 
@@ -206,7 +199,7 @@ const onLoad = async () => {
       return response.data?.data;
     }).catch(function (error) {
       loading.value = false;
-      console.log(`{props.flushPath} error. ${error}`);
+      console.log(`${props.flushPath} error. ${error}`);
       Toast.fail('系统繁忙');
       return;
     });
@@ -223,7 +216,24 @@ const onLoad = async () => {
       return response.data?.data;
     }).catch(function (error) {
       loading.value = false;
-      console.log(`{props.flushPath} error. ${error}`);
+      console.log(`${props.flushPath} error. ${error}`);
+      Toast.fail('系统繁忙');
+      return;
+    });
+  } else if (props.flushPath === userCarType.match) {
+    // 最佳推荐
+    userListData = await myAxios.get(props.flushPath, {
+      params: {
+        num: likePageSize,
+        pageNum: pageNum.value
+      }
+    }).then(function (response) {
+      loading.value = false;
+      console.log(`${props.flushPath} succeed. ${response}`);
+      return response.data?.data;
+    }).catch(function (error) {
+      loading.value = false;
+      console.log(`${props.flushPath} error. ${error}`);
       Toast.fail('系统繁忙');
       return;
     });
