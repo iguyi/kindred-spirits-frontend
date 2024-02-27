@@ -1,44 +1,54 @@
 <template>
-  <van-cell
-      v-for="team in teamList"
-      center
+  <!-- 列表 -->
+  <van-list
+      v-model:loading="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
   >
-    <template #right-icon>
-    </template>
-    <!--  加入队伍  -->
-    <template #extra>
-      <van-button
-          type="primary"
-          size="mini"
-          @click="joinTeam(team.id, team.status)"
-      >
-        加入
-      </van-button>
-    </template>
-    <template #default>
-      <div class="custom-cell">
-        <!-- 头像 -->
-        <div>
-          <van-image
-              round
-              width="80px"
-              height="80px"
-              :src="team.avatarUrl"
-          />
-        </div>
-        <!-- 队伍信息 -->
-        <div style="margin-left: 5px">
-          <span class="custom-title">{{ team.name }}</span><br>
-          <span style="color: #0084ff">剩余位置: {{team.maxNum-team.num}}</span>
-          <br>
-          <span style="color: #969799">
-            {{ team.description.length<=12 ? team.description : team.description.substring(0, 10)+'...'}}
+    <!--  内容  -->
+    <van-cell
+        v-for="team in teamList"
+        center
+    >
+      <template #right-icon>
+      </template>
+      <!--  加入队伍  -->
+      <template #extra>
+        <van-button
+            type="primary"
+            size="mini"
+            @click="joinTeam(team.id, team.status)"
+        >
+          加入
+        </van-button>
+      </template>
+      <template #default>
+        <div class="custom-cell">
+          <!-- 头像 -->
+          <div>
+            <van-image
+                round
+                width="80px"
+                height="80px"
+                :src="team.avatarUrl"
+            />
+          </div>
+          <!-- 队伍信息 -->
+          <div style="margin-left: 5px">
+            <span class="custom-title">{{ team.name }}</span><br>
+            <span style="color: #0084ff">剩余位置: {{ team.maxNum - team.num }}</span>
+            <br>
+            <span style="color: #969799">
+            {{ team.description.length <= 12 ? team.description : team.description.substring(0, 10) + '...' }}
           </span>
+          </div>
         </div>
-      </div>
-    </template>
-  </van-cell>
+      </template>
+    </van-cell>
+  </van-list>
 
+  <!-- 私有队伍入队验证 -->
   <van-dialog
       @confirm="joinPrivate"
       @cancel="clearJoinTeamParams"
@@ -54,6 +64,7 @@
     />
   </van-dialog>
 
+  <!-- 加密队伍入队验证 -->
   <van-dialog
       @confirm="joinSecret"
       @cancel="clearJoinTeamParams"
@@ -101,6 +112,9 @@ import {useRouter} from "vue-router";
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
 import {ref} from "vue";
+import qs from "qs";
+import {basePageSize} from "../config/page";
+import {teamCarType} from "../states/teamCar";
 
 const router = useRouter();
 
@@ -111,11 +125,67 @@ const privateTeamShow = ref(false);
 const secretTeamShow = ref(false);
 const checked = ref('1');
 
+// 入队验证的相关参数
 const joinTeamParams = ref({
   teamId: 0,
   password: '',
   teamLink: ''
 });
+
+// 列表相关参数
+const loading = ref(false);
+const finished = ref(false);
+const pageNum = ref(2);  // 初始页数为 2, 因为首次展示的数据是第一页的数据
+
+/**
+ * 异步加载数据
+ */
+const onLoad = async () => {
+  // 记录数据
+  let teamListData = null;
+
+  if (props.flushPath === teamCarType.addPageShow) {
+    // 对应 addPage 页
+    teamListData = await myAxios.get(teamCarType.addPageShow, {
+      params: {
+        status: 0,
+        pageSize: basePageSize,
+        pageNum: pageNum
+      },
+      paramsSerializer: params => {
+        return qs.stringify(params, {indices: false});
+      }
+    }).then(function (response) {
+      loading.value = false;
+      console.log(`${props.flushPath} succeed. ${response}`);
+      return response.data?.data;
+    }).catch(function (error) {
+      loading.value = false;
+      console.log(`{props.flushPath} error. ${error}`);
+      Toast.fail('系统繁忙');
+      return;
+    });
+  }
+
+  if (teamListData === null) {
+    // 无数据可加载
+    loading.value = false;
+    finished.value = true;
+    return;
+  }
+  let teamListDataRecord = teamListData.records;
+  if (teamListDataRecord.length === 0) {
+    // 无数据可加载
+    loading.value = false;
+    finished.value = true;
+    return;
+  }
+  teamListDataRecord.forEach(team => {
+    props.teamList.push(team);
+  });
+  pageNum.value = pageNum.value + 1;
+  loading.value = false;
+}
 
 /**
  * 加入队伍, 根据目标队伍类型, 选择加入时的操作
@@ -204,11 +274,15 @@ const clearJoinTeamParams = () => {
 
 interface TeamCardListProps {
   teamList: TeamType[];
+  flushPath: string;
+  searchCondition: string;
 }
 
 const props = withDefaults(defineProps<TeamCardListProps>(), {
   // @ts-ignore
   teamList: [] as TeamType[],
+  flushPath: '' as string,
+  searchCondition: "" as string
 });
 </script>
 
