@@ -10,12 +10,14 @@
       <span>&nbsp;</span>
 
       <user-card-list :user-list="userList" :flush-path="isLike ? userCarType.match : userCarType.recommend"/>
-      <van-empty v-if="(!userList || userList.length < 1) && $route.meta.result" image="search" description="数据为空"/>
+      <!-- $route.meta.result -->
+      <van-empty v-if="(!userList || userList.length < 1)" image="search" description="数据为空"/>
     </van-tab>
 
     <van-tab title="找队伍">
       <team-card-list :team-list="teamList"/>
-      <van-empty v-if="(!teamList || teamList.length < 1) && $route.meta.result" image="search" description="数据为空"/>
+      <!-- $route.meta.result -->
+      <van-empty v-if="(!teamList || teamList.length < 1)" image="search" description="数据为空"/>
     </van-tab>
   </van-tabs>
 </template>
