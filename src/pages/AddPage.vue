@@ -48,14 +48,15 @@ const loadData = async () => {
     // 心动模式
     userListData = await myAxios.get('/user/match', {
       params: {
-        num: likePageSize
+        num: likePageSize,
+        pageNum: basePageNumInit
       }
     }).then(function (response) {
       console.log('/user/match succeed. ' + response);
       return response.data?.data;
     }).catch(function (error) {
       console.log('/user/match error. ' + error);
-    })
+    });
   } else {
     // 普通模式
     userListData = await myAxios.get('/user/recommend', {
