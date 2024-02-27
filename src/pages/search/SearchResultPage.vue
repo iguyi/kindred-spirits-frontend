@@ -6,7 +6,12 @@
       :flush-path="userSearchType === 1 ? userCarType.searchUserByTag : userCarType.searchUserByFree"
       v-if="isUserResult && userSearchType !== 0"
   />
-  <team-card-list :team-list="teamList" v-if="!isUserResult"/>
+  <team-card-list
+      :team-list="teamList"
+      :search-condition="teamSearchCondition"
+      :flush-path="teamCarType.searchPageShow"
+      v-if="!isUserResult"
+  />
   <van-empty
       v-if="(!userList || userList.length < 1) && (!teamList || teamList.length < 1) && $route.meta.result"
       image="search"
@@ -24,6 +29,7 @@ import UserCardList from "../../components/UserCardList.vue";
 import TeamCardList from "../../components/TeamCardList.vue";
 import {basePageNumInit, basePageSize} from "../../config/page";
 import {userCarType} from "../../states/userCar";
+import {teamCarType} from "../../states/teamCar";
 
 const route = useRoute();
 
@@ -116,9 +122,11 @@ onMounted(async () => {
   // 队伍搜索
   teamSearchCondition.value = searchTeamCondition;
   isUserResult.value = false;
-  const teamListData = await myAxios.get('/team/search', {
+  const teamListData = await myAxios.get(teamCarType.searchPageShow, {
     params: {
       searchCondition: searchTeamCondition,
+      pageSize: basePageSize,
+      pageNum: basePageNumInit
     }
   });
   if (teamListData) {
