@@ -147,26 +147,6 @@ const onClickLeft = () => {
 
 // 可选标签列表 - 源数据
 let originTagList;
-/*let originTagList = [
-  {
-    text: '方向',
-    children: [
-      {text: 'Java', id: 'Java'},
-      {text: 'Python', id: 'Python'},
-      {text: 'C++', id: 'C++'},
-      {text: 'go', id: 'go'},
-      {text: '前端', id: '前端'},
-      /!*{text: 'C++', id: 'C++', disabled: true},*!/
-    ],
-  },
-  {
-    text: '性别',
-    children: [
-      {text: '男', id: '男'},
-      {text: '女', id: '女'},
-    ],
-  },
-];*/
 
 // 可选标签列表
 let tagList = ref(originTagList);
