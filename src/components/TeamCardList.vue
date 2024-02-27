@@ -113,7 +113,7 @@ import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
 import {ref} from "vue";
 import qs from "qs";
-import {basePageSize} from "../config/page";
+import {basePageNumInit, basePageSize} from "../config/page";
 import {teamCarType} from "../states/teamCar";
 
 const router = useRouter();
@@ -165,24 +165,46 @@ const onLoad = async () => {
       Toast.fail('系统繁忙');
       return;
     });
+
+    // 追加数据
+    if (teamListData === null) {
+      // 无数据可加载
+      loading.value = false;
+      finished.value = true;
+      return;
+    }
+    let teamListDataRecord = teamListData.records;
+    if (teamListDataRecord.length === 0) {
+      // 无数据可加载
+      loading.value = false;
+      finished.value = true;
+      return;
+    }
+    teamListDataRecord.forEach(team => {
+      props.teamList.push(team);
+    });
+  } else if (props.flushPath === teamCarType.searchPageShow) {
+    teamListData = await myAxios.get(teamCarType.searchPageShow, {
+      params: {
+        searchCondition: props.searchCondition,
+        pageSize: basePageSize,
+        pageNum: basePageNumInit
+      }
+    });
+
+    // 追加数据
+    if (teamListData !== null && teamListData.length !== 0) {
+      teamListData.forEach(team => {
+        props.teamList.push(team)
+      });
+    } else {
+      // 无数据可加载
+      loading.value = false;
+      finished.value = true;
+      return;
+    }
   }
 
-  if (teamListData === null) {
-    // 无数据可加载
-    loading.value = false;
-    finished.value = true;
-    return;
-  }
-  let teamListDataRecord = teamListData.records;
-  if (teamListDataRecord.length === 0) {
-    // 无数据可加载
-    loading.value = false;
-    finished.value = true;
-    return;
-  }
-  teamListDataRecord.forEach(team => {
-    props.teamList.push(team);
-  });
   pageNum.value = pageNum.value + 1;
   loading.value = false;
 }
