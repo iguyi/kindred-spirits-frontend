@@ -157,7 +157,7 @@ onMounted(async () => {
   const result = await myAxios.get("/tag/simple/list");
   if (!result || result.data.code !== 0) {
     Toast.fail("标签数据数据异常");
-   return;
+    return;
   }
   let tempData = [];
   result.data.data.forEach(childrenTagList => {
@@ -282,6 +282,9 @@ const dofSearch = () => {
   });
 }
 
+/**
+ * 队伍搜索
+ */
 const dofTeamSearch = () => {
   router.push({
     path: '/search/result',
