@@ -15,7 +15,7 @@
     </van-tab>
 
     <van-tab title="找队伍">
-      <team-card-list :team-list="teamList"/>
+      <team-card-list :team-list="teamList" :flush-path="teamCarType.addPageShow"/>
       <!-- $route.meta.result -->
       <van-empty v-if="(!teamList || teamList.length < 1)" image="search" description="数据为空"/>
     </van-tab>
@@ -32,6 +32,7 @@ import {useRouter} from "vue-router";
 import TeamCardList from "../components/TeamCardList.vue";
 import {userCarType} from "../states/userCar";
 import {basePageSize, basePageNumInit, likePageSize} from "../config/page"
+import {teamCarType} from "../states/teamCar";
 
 const router = useRouter();
 
@@ -96,9 +97,11 @@ watchEffect(() => {
 const teamList = ref([]);
 
 const findTeam = async () => {
-  const teamListData = await myAxios.get('/team/list/page', {
+  const teamListData = await myAxios.get(teamCarType.addPageShow, {
     params: {
-      status: 0
+      status: 0,
+      pageSize: basePageSize,
+      pageNum: basePageNumInit
     },
     paramsSerializer: params => {
       return qs.stringify(params, {indices: false});
