@@ -1,6 +1,13 @@
 <template>
+  <div style="position: fixed;top: 35px; width: 100%">
+    <img src="http://localhost:3000/public/logo.ico"
+         style="height: 100px; border-radius: 50%; display: block; margin: 0 auto;"
+         alt="Logo"
+    >
+  </div>
 
-  <van-tabs v-model:active="active" swipeable color="#00994C" type="card">
+  <van-tabs v-model:active="active" swipeable color="#00994C" type="card"
+            style="position: fixed; top: 150px; width: 100%">
     <van-tab title="登录">
       <br/>
       <div>
