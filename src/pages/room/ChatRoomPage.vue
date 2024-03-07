@@ -137,7 +137,6 @@ import {webSocketCache} from "../../states/chat";
 import {Toast} from "vant";
 import myAxios from "../../plugins/myAxios";
 import {FriendType} from "../../models/friend";
-import {ChatSessionStateRequest} from "../../models/chatSessionStateRequest";
 import backendUrl from "../../config/url";
 
 // 路由
@@ -162,7 +161,7 @@ const roomMeta = ref({
 const showFriendData = ref<FriendType>();  // 好友基本信息
 
 // 聊天功能
-const heartbeatInterval = ref(30 * 1000);  // 心跳检测间隔时间, 单位: ms
+const heartbeatInterval = ref(20 * 1000);  // 心跳检测间隔时间(时长不能卡在刚好 30s), 单位: ms
 const heartbeatTimer = ref(null);  // 心跳计时器
 let socket = null;  // WebSocket 连接
 
