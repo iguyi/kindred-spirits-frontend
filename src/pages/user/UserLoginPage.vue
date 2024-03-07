@@ -1,6 +1,6 @@
 <template>
   <div style="position: fixed;top: 35px; width: 100%">
-    <img src="http://localhost:3000/public/logo.ico"
+    <img :src="logo"
          style="height: 100px; border-radius: 50%; display: block; margin: 0 auto;"
          alt="Logo"
     >
@@ -84,6 +84,9 @@ import {useRoute, useRouter} from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
+
+// todo 上线
+const logo = 'http://localhost:3000/public/logo.ico';
 
 // =============== 登录部分 ===============
 const loginUserAccount = ref('');
